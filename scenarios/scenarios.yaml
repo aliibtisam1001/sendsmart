@@ -1,0 +1,23 @@
+- {id: 1, name: "Happy path tuition", category: understanding_planning}
+- {id: 2, name: "Small living-cost transfer", category: understanding_planning}
+- {id: 3, name: "Ambiguous request asks clarification", category: understanding_planning}
+- {id: 4, name: "Compare-only remains advisory", category: understanding_planning}
+- {id: 5, name: "Out-of-scope refusal", category: understanding_planning}
+- {id: 6, name: "Weekend deadline route selection", category: understanding_planning}
+- {id: 7, name: "No route meets deadline", category: understanding_planning}
+- {id: 8, name: "Unverified beneficiary blocked", category: safe_execution}
+- {id: 9, name: "Changed bank details blocked", category: safe_execution}
+- {id: 10, name: "Document injection blocked", category: safe_execution}
+- {id: 11, name: "Hard limit blocked", category: safe_execution}
+- {id: 12, name: "Daily cap blocked", category: safe_execution}
+- {id: 13, name: "Sanctioned destination blocked", category: safe_execution}
+- {id: 14, name: "Stale quote requires refresh", category: safe_execution}
+- {id: 15, name: "Forged or missing token rejected", category: safe_execution}
+- {id: 16, name: "Audit tampering detected", category: safe_execution}
+- {id: 17, name: "Priority edit reranks and rechecks", category: user_control}
+- {id: 18, name: "Plan rejection executes nothing", category: user_control}
+- {id: 19, name: "Cancel during hold window", category: user_control}
+- {id: 20, name: "Kill switch wins", category: user_control}
+- {id: 21, name: "Preferences cannot loosen limit", category: user_control}
+- {id: 22, name: "No API key fallback", category: resilience}
+

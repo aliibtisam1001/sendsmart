@@ -88,6 +88,7 @@ class SendSmartOrchestrator:
                     intent.slots[target] = parsed.fields[source]
                     if target in intent.missing_slots:
                         intent.missing_slots.remove(target)
+            question = clarification_question(intent)
         if intent.missing_slots or intent.ambiguities:
             return {"intent": intent, "clarification": question or clarification_question(intent), "executable": False}
         if intent.type.value in {"CHECK_STATUS", "CANCEL_PAYMENT", "CHANGE_PREFERENCE"}:

@@ -98,7 +98,7 @@ def classify_rule_based(text: str, now: datetime | None = None, defaults: dict[s
         return Intent(type=IntentType.CHANGE_PREFERENCE, confidence=Decimal("0.91"), slots={"priority": priority})
     compare = bool(re.search(r"\b(compare|quote|options|just checking|best rate|how much would)\b", lowered))
     tuition = bool(re.search(r"\b(tuition|university|college|school fee)\b", lowered))
-    transfer = bool(re.search(r"\b(send|transfer|remit|living cost|rent|money)\b", lowered))
+    transfer = bool(re.search(r"\b(send|transfer|remit|living costs?|rent|money)\b", lowered))
     intent_type = IntentType.COMPARE_ONLY if compare else (IntentType.PAY_TUITION if tuition else IntentType.SEND_LIVING_COSTS if transfer else IntentType.OUT_OF_SCOPE)
     if intent_type == IntentType.OUT_OF_SCOPE:
         return Intent(type=intent_type, confidence=Decimal("0.65"), slots={})
@@ -124,7 +124,7 @@ def classify_rule_based(text: str, now: datetime | None = None, defaults: dict[s
         "priority": next((p for p in ("cheapest", "fastest", "balanced") if p in lowered), defaults.get("priority", "balanced")),
     }
     required = ["amount", "currency_from", "currency_to", "beneficiary"]
-    if tuition:
+    if intent_type == IntentType.PAY_TUITION:
         required.append("deadline")
     missing = [field for field in required if not slots.get(field)]
     ambiguities = ["Multiple monetary amounts were found; identify which amount should be used."] if ambiguous_amount else []

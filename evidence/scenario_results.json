@@ -1,0 +1,6210 @@
+[
+  {
+    "id": 1,
+    "name": "Happy path tuition",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "a99850b2-ee9b-4442-9d98-2e73f993944e",
+      "user_id": "aisha",
+      "amount": "9000",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "RECIPIENT",
+      "beneficiary_id": "northbridge_university",
+      "purpose": "tuition",
+      "destination_country": "GB",
+      "deadline": "2026-10-27",
+      "source_document": null
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "9000",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "RECIPIENT",
+        "deadline": "2026-10-27",
+        "beneficiary": "northbridge_university",
+        "purpose": "tuition",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "a99850b2-ee9b-4442-9d98-2e73f993944e",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "done",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": true
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "39869.21",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "142.54",
+        "fx_markup_cost": "79.74",
+        "total_cost": "222.28",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "39849.25",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "220.67",
+        "fx_markup_cost": "59.77",
+        "total_cost": "280.44",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "39829.30",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "278.81",
+        "fx_markup_cost": "39.83",
+        "total_cost": "318.64",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "39909.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "181.59",
+        "fx_markup_cost": "119.73",
+        "total_cost": "301.32",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "40272.75",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "387.45",
+        "fx_markup_cost": "483.27",
+        "total_cost": "870.72",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8295",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T3_APPROVE",
+      "allowed": true,
+      "required_user_action": "Type APPROVE 9000 GBP TO Northbridge University",
+      "reasons": [
+        "Verified beneficiary and amount requires explicit typed approval."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T3_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "a99850b2-ee9b-4442-9d98-2e73f993944e",
+      "selected_provider": "ScholarTransfer",
+      "savings_vs_bank_send": "685.22",
+      "savings_vs_bank_usd": "163.15",
+      "savings_vs_bank_percent": "78.70",
+      "savings_vs_default_send": "36.78",
+      "savings_vs_default_usd": "8.76",
+      "savings_vs_default_percent": "16.55",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "user_actions": [
+      "typed approval"
+    ],
+    "outcome": {
+      "receipt_id": "sandbox-070eb86e-4abb-41cc-8432-641964e7c9c8",
+      "request_id": "a99850b2-ee9b-4442-9d98-2e73f993944e",
+      "provider": "ScholarTransfer",
+      "status": "PENDING",
+      "send_amount": "39889.20",
+      "send_currency": "MYR",
+      "recipient_amount": "9000.00",
+      "receive_currency": "GBP",
+      "created_at": "2026-10-19T18:45:21.571867+00:00",
+      "cancel_until": "2026-10-19T18:46:21.571867+00:00",
+      "disclosure": "SIMULATED PAYMENT - NO REAL FUNDS MOVED"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Small living-cost transfer",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "58f33fa5-2b90-4d5a-b522-dc5da8d3cfeb",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "58f33fa5-2b90-4d5a-b522-dc5da8d3cfeb",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "done",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": true
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "58f33fa5-2b90-4d5a-b522-dc5da8d3cfeb",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "user_actions": [
+      "confirm"
+    ],
+    "outcome": {
+      "receipt_id": "sandbox-cb80479c-9288-4455-841e-fd41325ef7aa",
+      "request_id": "58f33fa5-2b90-4d5a-b522-dc5da8d3cfeb",
+      "provider": "SwiftFox Student",
+      "status": "PENDING",
+      "send_amount": "300.00",
+      "send_currency": "MYR",
+      "recipient_amount": "67.72",
+      "receive_currency": "GBP",
+      "created_at": "2026-10-19T18:45:21.630859+00:00",
+      "cancel_until": "2026-10-19T18:46:21.630859+00:00",
+      "disclosure": "SIMULATED PAYMENT - NO REAL FUNDS MOVED"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Ambiguous request asks clarification",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": "send some money to my landlord",
+    "outcome": {
+      "intent": "type=<IntentType.SEND_LIVING_COSTS: 'SEND_LIVING_COSTS'> confidence=Decimal('0.78') slots={'amount': None, 'currency_from': 'MYR', 'currency_to': 'GBP', 'amount_mode': <AmountMode.SEND: 'SEND'>, 'deadline': None, 'beneficiary': 'aisha_landlord', 'purpose': 'living costs', 'priority': 'balanced'} missing_slots=['amount'] ambiguities=[]",
+      "clarification": "How much should be sent or received, and in which currency?",
+      "executable": false
+    }
+  },
+  {
+    "id": 4,
+    "name": "Compare-only remains advisory",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "06b1ac50-5212-45aa-b876-e9ce73b7ce60",
+      "user_id": "aisha",
+      "amount": "500",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "COMPARE_ONLY",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "500",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "06b1ac50-5212-45aa-b876-e9ce73b7ce60",
+      "intent_type": "COMPARE_ONLY",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "112.87",
+        "receive_currency": "GBP",
+        "fee": "4.75",
+        "fx_markup_cost": "1.00",
+        "total_cost": "5.75",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "112.93",
+        "receive_currency": "GBP",
+        "fee": "4.25",
+        "fx_markup_cost": "0.75",
+        "total_cost": "5.00",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "112.98",
+        "receive_currency": "GBP",
+        "fee": "3.50",
+        "fx_markup_cost": "0.50",
+        "total_cost": "4.00",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "112.81",
+        "receive_currency": "GBP",
+        "fee": "7.00",
+        "fx_markup_cost": "1.25",
+        "total_cost": "8.25",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "112.76",
+        "receive_currency": "GBP",
+        "fee": "4.25",
+        "fx_markup_cost": "1.50",
+        "total_cost": "5.75",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "111.74",
+        "receive_currency": "GBP",
+        "fee": "29.50",
+        "fx_markup_cost": "6.00",
+        "total_cost": "35.50",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "500.00",
+        "send_currency": "MYR",
+        "recipient_amount": "112.87",
+        "receive_currency": "GBP",
+        "fee": "4.75",
+        "fx_markup_cost": "1.00",
+        "total_cost": "5.75",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8510",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T1_ADVISE",
+      "allowed": true,
+      "required_user_action": "Review recommendation only; execution is disabled.",
+      "reasons": [
+        "The user requested comparison only."
+      ],
+      "triggered_rules": [
+        "COMPARE_ONLY"
+      ]
+    },
+    "value_report": {
+      "request_id": "06b1ac50-5212-45aa-b876-e9ce73b7ce60",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "29.75",
+      "savings_vs_bank_usd": "7.08",
+      "savings_vs_bank_percent": "83.80",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 5,
+    "name": "Out-of-scope refusal",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": "buy me a stock",
+    "outcome": {
+      "intent": "type=<IntentType.OUT_OF_SCOPE: 'OUT_OF_SCOPE'> confidence=Decimal('0.98') slots={} missing_slots=[] ambiguities=[]",
+      "message": "SendSmart can compare or simulate cross-border tuition and living-cost payments; it cannot trade investments."
+    }
+  },
+  {
+    "id": 6,
+    "name": "Weekend deadline route selection",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "fcbb4329-0d6e-4961-b619-760026da8841",
+      "user_id": "aisha",
+      "amount": "500",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "RECIPIENT",
+      "beneficiary_id": "northbridge_university",
+      "purpose": "tuition",
+      "destination_country": "GB",
+      "deadline": "2026-10-27",
+      "source_document": null
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "500",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "RECIPIENT",
+        "deadline": "2026-10-27",
+        "beneficiary": "northbridge_university",
+        "purpose": "tuition",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "fcbb4329-0d6e-4961-b619-760026da8841",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "2214.96",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "10.75",
+        "fx_markup_cost": "4.43",
+        "total_cost": "15.18",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "2213.85",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "13.68",
+        "fx_markup_cost": "3.32",
+        "total_cost": "17.00",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "2212.74",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "15.49",
+        "fx_markup_cost": "2.21",
+        "total_cost": "17.70",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "2216.07",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "10.43",
+        "fx_markup_cost": "5.54",
+        "total_cost": "15.97",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "2217.18",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "11.98",
+        "fx_markup_cost": "6.65",
+        "total_cost": "18.63",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "2237.37",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "45.14",
+        "fx_markup_cost": "26.85",
+        "total_cost": "71.99",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "2214.96",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "10.75",
+        "fx_markup_cost": "4.43",
+        "total_cost": "15.18",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-23T16:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.3667",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T3_APPROVE",
+      "allowed": true,
+      "required_user_action": "Type APPROVE 500 GBP TO Northbridge University",
+      "reasons": [
+        "Verified beneficiary and amount requires explicit typed approval."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T3_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "fcbb4329-0d6e-4961-b619-760026da8841",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "56.81",
+      "savings_vs_bank_usd": "13.53",
+      "savings_vs_bank_percent": "78.91",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 4,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 7,
+    "name": "No route meets deadline",
+    "category": "understanding_planning",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "feb1ed7d-8825-4338-a9f3-7217dd10bdcf",
+      "user_id": "aisha",
+      "amount": "500",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "RECIPIENT",
+      "beneficiary_id": "northbridge_university",
+      "purpose": "tuition",
+      "destination_country": "GB",
+      "deadline": "2026-10-20",
+      "source_document": null
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "500",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "RECIPIENT",
+        "deadline": "2026-10-20",
+        "beneficiary": "northbridge_university",
+        "purpose": "tuition",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "feb1ed7d-8825-4338-a9f3-7217dd10bdcf",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "2214.96",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "10.75",
+        "fx_markup_cost": "4.43",
+        "total_cost": "15.18",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "2213.85",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "13.68",
+        "fx_markup_cost": "3.32",
+        "total_cost": "17.00",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "2212.74",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "15.49",
+        "fx_markup_cost": "2.21",
+        "total_cost": "17.70",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "2216.07",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "10.43",
+        "fx_markup_cost": "5.54",
+        "total_cost": "15.97",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "2217.18",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "11.98",
+        "fx_markup_cost": "6.65",
+        "total_cost": "18.63",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "2237.37",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "45.14",
+        "fx_markup_cost": "26.85",
+        "total_cost": "71.99",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "2214.96",
+        "send_currency": "MYR",
+        "recipient_amount": "500.00",
+        "receive_currency": "GBP",
+        "fee": "10.75",
+        "fx_markup_cost": "4.43",
+        "total_cost": "15.18",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": false,
+        "is_mock": true
+      },
+      "score": "0.8266",
+      "rank": 1,
+      "rationale": [
+        "No available route meets the deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T3_APPROVE",
+      "allowed": true,
+      "required_user_action": "Type APPROVE 500 GBP TO Northbridge University",
+      "reasons": [
+        "Verified beneficiary and amount requires explicit typed approval."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T3_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "feb1ed7d-8825-4338-a9f3-7217dd10bdcf",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "56.81",
+      "savings_vs_bank_usd": "13.53",
+      "savings_vs_bank_percent": "78.91",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 8,
+    "name": "Unverified beneficiary blocked",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "a03bab3c-cafa-4be7-bffc-7d36f1e51ddc",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "new_beneficiary",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "new_beneficiary",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "a03bab3c-cafa-4be7-bffc-7d36f1e51ddc",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "The beneficiary is new or unverified."
+      ],
+      "triggered_rules": [
+        "BENEFICIARY_UNVERIFIED"
+      ]
+    },
+    "value_report": {
+      "request_id": "a03bab3c-cafa-4be7-bffc-7d36f1e51ddc",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [
+        "BENEFICIARY_UNVERIFIED"
+      ],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 9,
+    "name": "Changed bank details blocked",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "aa660f6f-b030-427f-bb37-bdd52c12bc30",
+      "user_id": "aisha",
+      "amount": "9000.00",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "RECIPIENT",
+      "beneficiary_id": "northbridge_university",
+      "purpose": "tuition",
+      "destination_country": "GB",
+      "deadline": "2026-10-27",
+      "source_document": "attached"
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.78",
+      "slots": {
+        "amount": "9000.00",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "RECIPIENT",
+        "deadline": "2026-10-27",
+        "beneficiary": "northbridge_university",
+        "purpose": "tuition",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "aa660f6f-b030-427f-bb37-bdd52c12bc30",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "39869.21",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "142.54",
+        "fx_markup_cost": "79.74",
+        "total_cost": "222.28",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "39849.25",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "220.67",
+        "fx_markup_cost": "59.77",
+        "total_cost": "280.44",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "39829.30",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "278.81",
+        "fx_markup_cost": "39.83",
+        "total_cost": "318.64",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "39909.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "181.59",
+        "fx_markup_cost": "119.73",
+        "total_cost": "301.32",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "40272.75",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "387.45",
+        "fx_markup_cost": "483.27",
+        "total_cost": "870.72",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8295",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "The supplied bank details differ from the verified record."
+      ],
+      "triggered_rules": [
+        "BANK_DETAILS_CHANGED"
+      ]
+    },
+    "value_report": {
+      "request_id": "aa660f6f-b030-427f-bb37-bdd52c12bc30",
+      "selected_provider": "ScholarTransfer",
+      "savings_vs_bank_send": "685.22",
+      "savings_vs_bank_usd": "163.15",
+      "savings_vs_bank_percent": "78.70",
+      "savings_vs_default_send": "36.78",
+      "savings_vs_default_usd": "8.76",
+      "savings_vs_default_percent": "16.55",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.002",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [
+        "BANK_DETAILS_CHANGED"
+      ],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 10,
+    "name": "Document injection blocked",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "bb7fe89b-de04-4a4e-90ec-a0f94aa930c3",
+      "user_id": "aisha",
+      "amount": "9000.00",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "RECIPIENT",
+      "beneficiary_id": "northbridge_university",
+      "purpose": "tuition",
+      "destination_country": "GB",
+      "deadline": "2026-10-27",
+      "source_document": "attached"
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.78",
+      "slots": {
+        "amount": "9000.00",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "RECIPIENT",
+        "deadline": "2026-10-27",
+        "beneficiary": "northbridge_university",
+        "purpose": "tuition",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "bb7fe89b-de04-4a4e-90ec-a0f94aa930c3",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "39869.21",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "142.54",
+        "fx_markup_cost": "79.74",
+        "total_cost": "222.28",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "39849.25",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "220.67",
+        "fx_markup_cost": "59.77",
+        "total_cost": "280.44",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "39829.30",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "278.81",
+        "fx_markup_cost": "39.83",
+        "total_cost": "318.64",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "39909.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "181.59",
+        "fx_markup_cost": "119.73",
+        "total_cost": "301.32",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "40272.75",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "387.45",
+        "fx_markup_cost": "483.27",
+        "total_cost": "870.72",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8295",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "Instruction-like text was detected in the source document."
+      ],
+      "triggered_rules": [
+        "UNTRUSTED_INSTRUCTION_DETECTED"
+      ]
+    },
+    "value_report": {
+      "request_id": "bb7fe89b-de04-4a4e-90ec-a0f94aa930c3",
+      "selected_provider": "ScholarTransfer",
+      "savings_vs_bank_send": "685.22",
+      "savings_vs_bank_usd": "163.15",
+      "savings_vs_bank_percent": "78.70",
+      "savings_vs_default_send": "36.78",
+      "savings_vs_default_usd": "8.76",
+      "savings_vs_default_percent": "16.55",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [
+        "UNTRUSTED_INSTRUCTION_DETECTED"
+      ],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 11,
+    "name": "Hard limit blocked",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "50aed790-503e-475c-9d0f-5f1292d17328",
+      "user_id": "aisha",
+      "amount": "50000",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "50000",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "50aed790-503e-475c-9d0f-5f1292d17328",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11286.90",
+        "receive_currency": "GBP",
+        "fee": "178.00",
+        "fx_markup_cost": "100.00",
+        "total_cost": "278.00",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11292.56",
+        "receive_currency": "GBP",
+        "fee": "276.50",
+        "fx_markup_cost": "75.00",
+        "total_cost": "351.50",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11298.21",
+        "receive_currency": "GBP",
+        "fee": "350.00",
+        "fx_markup_cost": "50.00",
+        "total_cost": "400.00",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11281.25",
+        "receive_currency": "GBP",
+        "fee": "106.00",
+        "fx_markup_cost": "125.00",
+        "total_cost": "231.00",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11275.60",
+        "receive_currency": "GBP",
+        "fee": "227.00",
+        "fx_markup_cost": "150.00",
+        "total_cost": "377.00",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11173.81",
+        "receive_currency": "GBP",
+        "fee": "475.00",
+        "fx_markup_cost": "600.00",
+        "total_cost": "1075.00",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "50000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "11281.25",
+        "receive_currency": "GBP",
+        "fee": "106.00",
+        "fx_markup_cost": "125.00",
+        "total_cost": "231.00",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8286",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "The amount exceeds the USD 10000 hard limit.",
+        "The amount exceeds the user's stricter personal limit."
+      ],
+      "triggered_rules": [
+        "HARD_LIMIT_EXCEEDED",
+        "PERSONAL_LIMIT_EXCEEDED"
+      ]
+    },
+    "value_report": {
+      "request_id": "50aed790-503e-475c-9d0f-5f1292d17328",
+      "selected_provider": "ScholarTransfer",
+      "savings_vs_bank_send": "844.00",
+      "savings_vs_bank_usd": "200.95",
+      "savings_vs_bank_percent": "78.51",
+      "savings_vs_default_send": "47.00",
+      "savings_vs_default_usd": "11.19",
+      "savings_vs_default_percent": "16.91",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [
+        "HARD_LIMIT_EXCEEDED",
+        "PERSONAL_LIMIT_EXCEEDED"
+      ],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 12,
+    "name": "Daily cap blocked",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "ffd46996-c355-418c-b835-d096346e1618",
+      "user_id": "carlos",
+      "amount": "150000",
+      "currency_from": "MXN",
+      "currency_to": "USD",
+      "amount_mode": "SEND",
+      "beneficiary_id": "carlos_university",
+      "purpose": "tuition",
+      "destination_country": "US",
+      "deadline": "2026-10-30",
+      "source_document": null
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "150000",
+        "currency_from": "MXN",
+        "currency_to": "USD",
+        "amount_mode": "SEND",
+        "deadline": "2026-10-30",
+        "beneficiary": "carlos_university",
+        "purpose": "tuition",
+        "priority": "cheapest"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "ffd46996-c355-418c-b835-d096346e1618",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8316.67",
+        "receive_currency": "USD",
+        "fee": "528.00",
+        "fx_markup_cost": "300.00",
+        "total_cost": "828.00",
+        "rate": "0.055444",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8320.83",
+        "receive_currency": "USD",
+        "fee": "826.50",
+        "fx_markup_cost": "225.00",
+        "total_cost": "1051.50",
+        "rate": "0.055472",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8325.00",
+        "receive_currency": "USD",
+        "fee": "1050.00",
+        "fx_markup_cost": "150.00",
+        "total_cost": "1200.00",
+        "rate": "0.055500",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8312.50",
+        "receive_currency": "USD",
+        "fee": "306.00",
+        "fx_markup_cost": "375.00",
+        "total_cost": "681.00",
+        "rate": "0.055417",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8308.33",
+        "receive_currency": "USD",
+        "fee": "677.00",
+        "fx_markup_cost": "450.00",
+        "total_cost": "1127.00",
+        "rate": "0.055389",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8233.33",
+        "receive_currency": "USD",
+        "fee": "1375.00",
+        "fx_markup_cost": "1800.00",
+        "total_cost": "3175.00",
+        "rate": "0.054889",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "150000.00",
+        "send_currency": "MXN",
+        "recipient_amount": "8312.50",
+        "receive_currency": "USD",
+        "fee": "306.00",
+        "fx_markup_cost": "375.00",
+        "total_cost": "681.00",
+        "rate": "0.055417",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8071",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for cheapest preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "The transfer would exceed the user's daily cap."
+      ],
+      "triggered_rules": [
+        "DAILY_CAP_EXCEEDED"
+      ]
+    },
+    "value_report": {
+      "request_id": "ffd46996-c355-418c-b835-d096346e1618",
+      "selected_provider": "ScholarTransfer",
+      "savings_vs_bank_send": "2494.00",
+      "savings_vs_bank_usd": "138.56",
+      "savings_vs_bank_percent": "78.55",
+      "savings_vs_default_send": "147.00",
+      "savings_vs_default_usd": "8.17",
+      "savings_vs_default_percent": "17.75",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [
+        "DAILY_CAP_EXCEEDED"
+      ],
+      "is_mock": true
+    }
+  },
+  {
+    "id": 13,
+    "name": "Sanctioned destination blocked",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "af2fc34d-7921-428c-8c52-3b12232877c1",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "XZ",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "af2fc34d-7921-428c-8c52-3b12232877c1",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "af2fc34d-7921-428c-8c52-3b12232877c1",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "outcome": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "The destination is on the sandbox sanctions list."
+      ],
+      "triggered_rules": [
+        "SANCTIONED_DESTINATION"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "name": "Stale quote requires refresh",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "d64ea3a0-61f4-4d1b-80f8-d6d8d94a0877",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "d64ea3a0-61f4-4d1b-80f8-d6d8d94a0877",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "d64ea3a0-61f4-4d1b-80f8-d6d8d94a0877",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "outcome": {
+      "tier": "BLOCKED",
+      "allowed": false,
+      "required_user_action": "Resolve the blocking conditions; no token can be issued.",
+      "reasons": [
+        "The FX quote is stale and must be refreshed."
+      ],
+      "triggered_rules": [
+        "STALE_QUOTE"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "name": "Forged or missing token rejected",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "878753a2-164a-4cf4-b9a1-800090b9370f",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "878753a2-164a-4cf4-b9a1-800090b9370f",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "878753a2-164a-4cf4-b9a1-800090b9370f",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.002",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "outcome": "MISSING_EXECUTION_TOKEN"
+  },
+  {
+    "id": 16,
+    "name": "Audit tampering detected",
+    "category": "safe_execution",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "outcome": "tampering detected"
+  },
+  {
+    "id": 17,
+    "name": "Priority edit reranks and rechecks",
+    "category": "user_control",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "cf43e64d-30ed-47af-a1b7-92eb35c42f4e",
+      "user_id": "aisha",
+      "amount": "1000",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "1000",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "cf43e64d-30ed-47af-a1b7-92eb35c42f4e",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.74",
+        "receive_currency": "GBP",
+        "fee": "6.50",
+        "fx_markup_cost": "2.00",
+        "total_cost": "8.50",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.85",
+        "receive_currency": "GBP",
+        "fee": "7.00",
+        "fx_markup_cost": "1.50",
+        "total_cost": "8.50",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.96",
+        "receive_currency": "GBP",
+        "fee": "7.00",
+        "fx_markup_cost": "1.00",
+        "total_cost": "8.00",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.63",
+        "receive_currency": "GBP",
+        "fee": "8.00",
+        "fx_markup_cost": "2.50",
+        "total_cost": "10.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.51",
+        "receive_currency": "GBP",
+        "fee": "6.50",
+        "fx_markup_cost": "3.00",
+        "total_cost": "9.50",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "223.48",
+        "receive_currency": "GBP",
+        "fee": "34.00",
+        "fx_markup_cost": "12.00",
+        "total_cost": "46.00",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.74",
+        "receive_currency": "GBP",
+        "fee": "6.50",
+        "fx_markup_cost": "2.00",
+        "total_cost": "8.50",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8396",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "cf43e64d-30ed-47af-a1b7-92eb35c42f4e",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "37.50",
+      "savings_vs_bank_usd": "8.93",
+      "savings_vs_bank_percent": "81.52",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.003",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "user_actions": [
+      "edit priority to fastest"
+    ],
+    "outcome": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "1000.00",
+        "send_currency": "MYR",
+        "recipient_amount": "225.74",
+        "receive_currency": "GBP",
+        "fee": "6.50",
+        "fx_markup_cost": "2.00",
+        "total_cost": "8.50",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8270",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for fastest preference"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "name": "Plan rejection executes nothing",
+    "category": "user_control",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "c9cb8db9-026b-406e-b01d-e5acb150dfd9",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "c9cb8db9-026b-406e-b01d-e5acb150dfd9",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "skipped",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "skipped",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "skipped",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "c9cb8db9-026b-406e-b01d-e5acb150dfd9",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.001",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "user_actions": [
+      "reject"
+    ],
+    "outcome": {
+      "request_id": "c9cb8db9-026b-406e-b01d-e5acb150dfd9",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "skipped",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "skipped",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "skipped",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    }
+  },
+  {
+    "id": 19,
+    "name": "Cancel during hold window",
+    "category": "user_control",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "b88afa5b-0fd1-482d-8572-f2c406dd1dd0",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "b88afa5b-0fd1-482d-8572-f2c406dd1dd0",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "done",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": true
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "b88afa5b-0fd1-482d-8572-f2c406dd1dd0",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.003",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "user_actions": [
+      "confirm",
+      "cancel"
+    ],
+    "outcome": {
+      "receipt_id": "sandbox-31b70551-7f45-4311-8ac1-41880d68ca67",
+      "request_id": "b88afa5b-0fd1-482d-8572-f2c406dd1dd0",
+      "provider": "SwiftFox Student",
+      "status": "CANCELLED",
+      "send_amount": "300.00",
+      "send_currency": "MYR",
+      "recipient_amount": "67.72",
+      "receive_currency": "GBP",
+      "created_at": "2026-10-19T18:45:22.400668+00:00",
+      "cancel_until": "2026-10-19T18:46:22.400668+00:00",
+      "disclosure": "SIMULATED PAYMENT - NO REAL FUNDS MOVED"
+    }
+  },
+  {
+    "id": 20,
+    "name": "Kill switch wins",
+    "category": "user_control",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "7cd024fd-b879-46a2-84aa-97b30760a4ec",
+      "user_id": "aisha",
+      "amount": "300",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "SEND",
+      "beneficiary_id": "aisha_landlord",
+      "purpose": "living costs",
+      "destination_country": "GB",
+      "deadline": null,
+      "source_document": null
+    },
+    "intent": {
+      "type": "SEND_LIVING_COSTS",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "300",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "SEND",
+        "deadline": null,
+        "beneficiary": "aisha_landlord",
+        "purpose": "living costs",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "7cd024fd-b879-46a2-84aa-97b30760a4ec",
+      "intent_type": "SEND_LIVING_COSTS",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.76",
+        "receive_currency": "GBP",
+        "fee": "3.15",
+        "fx_markup_cost": "0.45",
+        "total_cost": "3.60",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.79",
+        "receive_currency": "GBP",
+        "fee": "2.10",
+        "fx_markup_cost": "0.30",
+        "total_cost": "2.40",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.69",
+        "receive_currency": "GBP",
+        "fee": "6.60",
+        "fx_markup_cost": "0.75",
+        "total_cost": "7.35",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.65",
+        "receive_currency": "GBP",
+        "fee": "3.35",
+        "fx_markup_cost": "0.90",
+        "total_cost": "4.25",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.04",
+        "receive_currency": "GBP",
+        "fee": "27.70",
+        "fx_markup_cost": "3.60",
+        "total_cost": "31.30",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "300.00",
+        "send_currency": "MYR",
+        "recipient_amount": "67.72",
+        "receive_currency": "GBP",
+        "fee": "4.05",
+        "fx_markup_cost": "0.60",
+        "total_cost": "4.65",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8577",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T2_CONFIRM",
+      "allowed": true,
+      "required_user_action": "Click Confirm to authorize this simulated payment.",
+      "reasons": [
+        "Verified beneficiary and amount is within the one-click confirmation tier."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T2_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "7cd024fd-b879-46a2-84aa-97b30760a4ec",
+      "selected_provider": "SwiftFox Student",
+      "savings_vs_bank_send": "26.65",
+      "savings_vs_bank_usd": "6.35",
+      "savings_vs_bank_percent": "85.14",
+      "savings_vs_default_send": "0.00",
+      "savings_vs_default_usd": "0.00",
+      "savings_vs_default_percent": "0.00",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.004",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    },
+    "user_actions": [
+      "STOP AGENT"
+    ],
+    "outcome": "KILL_SWITCH_ACTIVE"
+  },
+  {
+    "id": 21,
+    "name": "Preferences cannot loosen limit",
+    "category": "user_control",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": "raise limit to 50000",
+    "outcome": {
+      "priority": "balanced",
+      "cost_weight": "0.5",
+      "speed_weight": "0.3",
+      "reliability_weight": "0.2",
+      "max_fee_percent": "5",
+      "preferred_providers": [],
+      "notify_risks": true,
+      "personal_limit_usd": "2000"
+    }
+  },
+  {
+    "id": 22,
+    "name": "No API key fallback",
+    "category": "resilience",
+    "passed": true,
+    "expected": "pass",
+    "actual": "pass",
+    "error": null,
+    "input": {
+      "request_id": "e730bf21-cebc-4130-9884-de0b738a197b",
+      "user_id": "aisha",
+      "amount": "9000",
+      "currency_from": "MYR",
+      "currency_to": "GBP",
+      "amount_mode": "RECIPIENT",
+      "beneficiary_id": "northbridge_university",
+      "purpose": "tuition",
+      "destination_country": "GB",
+      "deadline": "2026-10-27",
+      "source_document": null
+    },
+    "intent": {
+      "type": "PAY_TUITION",
+      "confidence": "0.90",
+      "slots": {
+        "amount": "9000",
+        "currency_from": "MYR",
+        "currency_to": "GBP",
+        "amount_mode": "RECIPIENT",
+        "deadline": "2026-10-27",
+        "beneficiary": "northbridge_university",
+        "purpose": "tuition",
+        "priority": "balanced"
+      },
+      "missing_slots": [],
+      "ambiguities": []
+    },
+    "plan": {
+      "request_id": "e730bf21-cebc-4130-9884-de0b738a197b",
+      "intent_type": "PAY_TUITION",
+      "steps": [
+        {
+          "id": 1,
+          "action": "Validate the structured request",
+          "tool": "validate_request",
+          "inputs": {},
+          "depends_on": [],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Reject missing or malformed values before comparison."
+        },
+        {
+          "id": 2,
+          "action": "Verify beneficiary and bank fingerprint",
+          "tool": "verify_beneficiary",
+          "inputs": {},
+          "depends_on": [
+            1
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Prevent redirection to unknown or changed accounts."
+        },
+        {
+          "id": 3,
+          "action": "Fetch FX and check freshness",
+          "tool": "get_fx",
+          "inputs": {},
+          "depends_on": [
+            2
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Use a traceable rate and reject stale quotes."
+        },
+        {
+          "id": 4,
+          "action": "Compare deterministic route costs",
+          "tool": "compare_routes",
+          "inputs": {},
+          "depends_on": [
+            3
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Compute every amount in deterministic Decimal arithmetic."
+        },
+        {
+          "id": 5,
+          "action": "Rank feasible routes",
+          "tool": "rank_routes",
+          "inputs": {},
+          "depends_on": [
+            4
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Respect cost, speed, reliability and deadline preferences."
+        },
+        {
+          "id": 6,
+          "action": "Recommend and explain",
+          "tool": "explain",
+          "inputs": {},
+          "depends_on": [
+            5
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Show the user why the route was selected."
+        },
+        {
+          "id": 7,
+          "action": "Run policy guardrails",
+          "tool": "check_policy",
+          "inputs": {},
+          "depends_on": [
+            6
+          ],
+          "status": "done",
+          "requires_user_checkpoint": false,
+          "rationale": "Code, not the language model, determines permission tier."
+        },
+        {
+          "id": 8,
+          "action": "User approves plan and route",
+          "tool": "user_checkpoint",
+          "inputs": {},
+          "depends_on": [
+            7
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": true,
+          "rationale": "Nothing executes until the user explicitly approves."
+        },
+        {
+          "id": 9,
+          "action": "Mint a bound execution token",
+          "tool": "mint_token",
+          "inputs": {},
+          "depends_on": [
+            8
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Bind authorization to this exact request and route."
+        },
+        {
+          "id": 10,
+          "action": "Execute in the sandbox",
+          "tool": "execute_sandbox",
+          "inputs": {},
+          "depends_on": [
+            9
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Move no real funds; accept only a valid one-time token."
+        },
+        {
+          "id": 11,
+          "action": "Return receipt, audit and value report",
+          "tool": "report_result",
+          "inputs": {},
+          "depends_on": [
+            10
+          ],
+          "status": "pending",
+          "requires_user_checkpoint": false,
+          "rationale": "Claim success only after a sandbox receipt exists."
+        }
+      ],
+      "approved": false
+    },
+    "quotes": [
+      {
+        "provider_id": "swiftfox",
+        "provider_name": "SwiftFox Student",
+        "send_amount": "39869.21",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "142.54",
+        "fx_markup_cost": "79.74",
+        "total_cost": "222.28",
+        "rate": "0.225738",
+        "eta_business_days": 1,
+        "reliability": "0.96",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "campusbridge",
+        "provider_name": "CampusBridge Pay",
+        "send_amount": "39849.25",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "220.67",
+        "fx_markup_cost": "59.77",
+        "total_cost": "280.44",
+        "rate": "0.225851",
+        "eta_business_days": 2,
+        "reliability": "0.94",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "orbitremit",
+        "provider_name": "OrbitRemit",
+        "send_amount": "39829.30",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "278.81",
+        "fx_markup_cost": "39.83",
+        "total_cost": "318.64",
+        "rate": "0.225964",
+        "eta_business_days": 3,
+        "reliability": "0.92",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "globalnest",
+        "provider_name": "GlobalNest Money",
+        "send_amount": "39909.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "181.59",
+        "fx_markup_cost": "119.73",
+        "total_cost": "301.32",
+        "rate": "0.225512",
+        "eta_business_days": 2,
+        "reliability": "0.95",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      {
+        "provider_id": "bankwire",
+        "provider_name": "Traditional Bank Wire (Baseline)",
+        "send_amount": "40272.75",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "387.45",
+        "fx_markup_cost": "483.27",
+        "total_cost": "870.72",
+        "rate": "0.223476",
+        "eta_business_days": 4,
+        "reliability": "0.99",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      }
+    ],
+    "recommendation": {
+      "quote": {
+        "provider_id": "scholartransfer",
+        "provider_name": "ScholarTransfer",
+        "send_amount": "39889.20",
+        "send_currency": "MYR",
+        "recipient_amount": "9000.00",
+        "receive_currency": "GBP",
+        "fee": "85.78",
+        "fx_markup_cost": "99.72",
+        "total_cost": "185.50",
+        "rate": "0.225625",
+        "eta_business_days": 1,
+        "reliability": "0.98",
+        "quoted_at": "2026-10-20T09:00:00Z",
+        "deadline_ok": true,
+        "is_mock": true
+      },
+      "score": "0.8295",
+      "rank": 1,
+      "rationale": [
+        "Meets the requested deadline",
+        "Ranked for balanced preference"
+      ]
+    },
+    "policy_decision": {
+      "tier": "T3_APPROVE",
+      "allowed": true,
+      "required_user_action": "Type APPROVE 9000 GBP TO Northbridge University",
+      "reasons": [
+        "Verified beneficiary and amount requires explicit typed approval."
+      ],
+      "triggered_rules": [
+        "VERIFIED_BENEFICIARY",
+        "T3_AMOUNT"
+      ]
+    },
+    "value_report": {
+      "request_id": "e730bf21-cebc-4130-9884-de0b738a197b",
+      "selected_provider": "ScholarTransfer",
+      "savings_vs_bank_send": "685.22",
+      "savings_vs_bank_usd": "163.15",
+      "savings_vs_bank_percent": "78.70",
+      "savings_vs_default_send": "36.78",
+      "savings_vs_default_usd": "8.76",
+      "savings_vs_default_percent": "16.55",
+      "deadline_risk_avoided": 0,
+      "comparison_seconds": "0.002",
+      "estimated_manual_minutes": "24",
+      "risk_events_blocked": [],
+      "is_mock": true
+    }
+  }
+]

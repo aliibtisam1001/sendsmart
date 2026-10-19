@@ -1,0 +1,10 @@
+{
+  "scenario_count": 22,
+  "scenario_pass_count": 22,
+  "task_completion_rate": 1.0,
+  "attack_block_rate": 1.0,
+  "false_block_rate": 0.0,
+  "average_savings_vs_bank_usd": 60.33,
+  "total_savings_vs_bank_usd": 1085.98,
+  "mock_data": true
+}
