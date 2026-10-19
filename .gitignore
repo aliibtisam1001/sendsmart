@@ -1,4 +1,15 @@
+# Secrets & Environment
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+
+# Python
 .venv/
 __pycache__/
 *.py[cod]
@@ -10,6 +21,18 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# Slides & builds
 .slides-build/
 .chart-data-*/
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 
