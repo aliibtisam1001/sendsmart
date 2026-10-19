@@ -1,0 +1,7 @@
+[
+  {"id":"northbridge_university","name":"Northbridge University","country":"GB","verified":true,"bank_fingerprint":"GB-UNI-001-A9F2"},
+  {"id":"aisha_landlord","name":"Aisha's Landlord","country":"GB","verified":true,"bank_fingerprint":"GB-LAND-044-C2D1"},
+  {"id":"carlos_university","name":"Pacific State University","country":"US","verified":true,"bank_fingerprint":"US-UNI-210-B72E"},
+  {"id":"new_beneficiary","name":"New Beneficiary","country":"GB","verified":false,"bank_fingerprint":"GB-NEW-999-ZZZZ"}
+]
+

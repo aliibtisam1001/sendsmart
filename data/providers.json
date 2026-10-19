@@ -1,0 +1,9 @@
+[
+  {"id":"swiftfox","name":"SwiftFox Student","fee_fixed":"3.00","fee_percent":"0.35","fx_markup_percent":"0.20","eta_business_days":1,"reliability":"0.96","default_choice":true},
+  {"id":"campusbridge","name":"CampusBridge Pay","fee_fixed":"1.50","fee_percent":"0.55","fx_markup_percent":"0.15","eta_business_days":2,"reliability":"0.94","default_choice":false},
+  {"id":"orbitremit","name":"OrbitRemit","fee_fixed":"0.00","fee_percent":"0.70","fx_markup_percent":"0.10","eta_business_days":3,"reliability":"0.92","default_choice":false},
+  {"id":"scholartransfer","name":"ScholarTransfer","fee_fixed":"6.00","fee_percent":"0.20","fx_markup_percent":"0.25","eta_business_days":1,"reliability":"0.98","default_choice":false},
+  {"id":"globalnest","name":"GlobalNest Money","fee_fixed":"2.00","fee_percent":"0.45","fx_markup_percent":"0.30","eta_business_days":2,"reliability":"0.95","default_choice":false},
+  {"id":"bankwire","name":"Traditional Bank Wire (Baseline)","fee_fixed":"25.00","fee_percent":"0.90","fx_markup_percent":"1.20","eta_business_days":4,"reliability":"0.99","default_choice":false,"baseline":true}
+]
+

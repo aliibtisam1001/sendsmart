@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sendsmart"
+version = "0.1.0"
+description = "Security-first cross-border student finance assistant demo"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+  "pydantic>=2.7,<3",
+  "PyYAML>=6,<7",
+  "requests>=2.32,<3",
+]
+
+[project.optional-dependencies]
+ui = ["streamlit>=1.37,<2"]
+llm = ["anthropic>=0.40,<1"]
+dev = ["pytest>=8,<9", "pytest-cov>=5,<7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q --cov=src/sendsmart --cov-report=term-missing"
+

@@ -1,0 +1,5 @@
+[
+  {"id":"aisha","name":"Aisha","home_country":"MY","daily_cap_usd":"12000","daily_spend_usd":"0","priority":"balanced"},
+  {"id":"carlos","name":"Carlos","home_country":"MX","daily_cap_usd":"8000","daily_spend_usd":"250","priority":"cheapest"}
+]
+
