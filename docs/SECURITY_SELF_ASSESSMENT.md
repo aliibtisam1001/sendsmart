@@ -22,6 +22,7 @@ Protected assets are authorization integrity, beneficiary integrity, amount corr
 | Injection detection | `security/injection.py` | scenario 10 |
 | Caps and sanctions | `security/policy.py` | scenarios 11–13 |
 | Freshness | `core/fx.py`, policy | scenario 14 |
+| Deadline feasibility | ETA + policy | scenarios 6–7 |
 | Bound HMAC token | `security/tokens.py` | forged/replay test; scenario 15 |
 | Tamper evidence | `security/audit.py` | audit mutation test; scenario 16 |
 | Plan checkpoint | `agent/planner.py`, `control/user_control.py` | plan test; scenario 18 |

@@ -10,4 +10,6 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+.slides-build/
+.chart-data-*/
 

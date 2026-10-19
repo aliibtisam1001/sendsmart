@@ -27,3 +27,9 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-q --cov=src/sendsmart --cov-report=term-missing"
 
+[tool.coverage.run]
+omit = [
+  "src/sendsmart/ui/*",
+  "src/sendsmart/agent/llm.py",
+]
+

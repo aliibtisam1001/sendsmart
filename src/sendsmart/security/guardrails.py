@@ -37,6 +37,8 @@ def blocked_rules(
         blocked.append(("UNTRUSTED_INSTRUCTION_DETECTED", "Instruction-like text was detected in the source document."))
     if quote_stale:
         blocked.append(("STALE_QUOTE", "The FX quote is stale and must be refreshed."))
+    if request.deadline is not None and not quote.deadline_ok:
+        blocked.append(("NO_FEASIBLE_ROUTE", "No available route can meet the requested deadline."))
     if preferences and usd_equivalent > min(preferences.personal_limit_usd, settings.hard_limit_usd):
         blocked.append(("PERSONAL_LIMIT_EXCEEDED", "The amount exceeds the user's stricter personal limit."))
     if quote.send_amount <= 0 or request.amount <= 0:

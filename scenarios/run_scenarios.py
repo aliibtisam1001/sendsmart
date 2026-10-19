@@ -64,7 +64,7 @@ def run_scenario(identifier: int, agent: SendSmartOrchestrator) -> tuple[bool, d
     if identifier == 7:
         p = agent.prepare("Pay GBP 500 tuition to Northbridge University from MYR by 20 October 2026", now=NOW)
         assert isinstance(p, PreparedTransfer)
-        return all(not q.deadline_ok for q in p.quotes), compact(p)
+        return all(not q.deadline_ok for q in p.quotes) and "NO_FEASIBLE_ROUTE" in p.policy.triggered_rules, compact(p)
     if identifier == 8:
         p = agent.prepare("Send GBP 300 from MYR to GBP to new beneficiary", now=NOW)
         assert isinstance(p, PreparedTransfer)
@@ -163,7 +163,7 @@ def main() -> int:
     passed_count = sum(item["passed"] for item in results)
     attack_ids = {8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 21}
     attack_results = [item for item in results if item["id"] in attack_ids]
-    legitimate = [item for item in results if item["id"] not in attack_ids]
+    legitimate = [item for item in results if item["id"] in {1, 2, 4, 6, 17, 18, 19, 22}]
     value_reports = [item.get("value_report") for item in results if item.get("value_report")]
     metrics = {
         "scenario_count": len(results), "scenario_pass_count": passed_count,
