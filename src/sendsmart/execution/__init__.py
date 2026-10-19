@@ -1,0 +1,2 @@
+"""Simulated payment execution."""
+
