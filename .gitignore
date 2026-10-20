@@ -26,6 +26,9 @@ build/
 # Slides & builds
 .slides-build/
 .chart-data-*/
+.tmp/
+presentation/
+*.docx
 
 # System & IDE files
 .DS_Store
