@@ -30,22 +30,42 @@ st.set_page_config(page_title="SendSmart | Global study payments", page_icon="�
 st.markdown(
     """
     <style>
-    .stApp {background: linear-gradient(145deg,#f8fafc 0%,#eef6ff 48%,#f7f5ff 100%);}
-    .block-container {max-width: 1240px; padding-top: 1.5rem; padding-bottom: 4rem;}
-    .hero {padding:1.5rem 1.6rem;border-radius:1.2rem;background:linear-gradient(120deg,#082f49,#1d4ed8 58%,#6d28d9);color:white;box-shadow:0 18px 42px rgba(30,64,175,.18);margin-bottom:1rem}
-    .hero h1 {font-size:2.15rem;margin:0 0 .35rem 0;color:white}.hero p {font-size:1.03rem;margin:0;color:#dbeafe}
-    .pill {display:inline-block;padding:.28rem .62rem;border-radius:999px;background:rgba(255,255,255,.16);margin:.75rem .35rem 0 0;font-size:.82rem;font-weight:700}
-    .notice {padding:.8rem 1rem;border:1px solid #fdba74;border-left:5px solid #f97316;border-radius:.7rem;background:#fff7ed;color:#7c2d12;margin:.5rem 0 1rem}
-    .success-card {padding:1.05rem 1.2rem;border:1px solid #86efac;border-radius:.9rem;background:#f0fdf4}
-    .step {padding:.55rem .72rem;margin:.32rem 0;border:1px solid #dbeafe;border-radius:.55rem;background:white}
+    :root {--ss-ink:#111827;--ss-muted:#667085;--ss-purple:#5b21b6;--ss-violet:#7c3aed;--ss-navy:#0c1435;--ss-border:#dfe3ef;--ss-surface:#f7f8fc;}
+    html, body, [class*="css"] {font-family:"Source Sans Pro","Segoe UI",sans-serif;}
+    .stApp {background:linear-gradient(145deg,#f8f9fd 0%,#f2f5fb 52%,#f8f5ff 100%);color:var(--ss-ink)}
+    .block-container {max-width:1328px;padding-top:1.1rem;padding-bottom:4rem}
+    .topbar {display:flex;align-items:center;justify-content:space-between;padding:.2rem .15rem 1rem}
+    .brand {display:flex;align-items:center;gap:.72rem}.brand-mark{display:grid;place-items:center;width:2.3rem;height:2.3rem;border-radius:.75rem;background:var(--ss-purple);color:white;font-weight:800;font-size:1.1rem;box-shadow:0 8px 20px rgba(91,33,182,.25)}
+    .brand-copy b{display:block;font-size:1.05rem;line-height:1}.brand-copy span{font-size:.74rem;color:var(--ss-muted)}
+    .mode-pill{padding:.42rem .72rem;border-radius:999px;background:#e9fbf3;color:#067647;font-size:.78rem;font-weight:700;border:1px solid #c9f1df}
+    .hero {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,.72fr);gap:2rem;align-items:center;padding:2rem 2.2rem;border-radius:1.75rem;background:linear-gradient(120deg,#0c1435 0%,#151b47 60%,#31206b 100%);color:white;box-shadow:0 24px 60px rgba(15,23,42,.16);margin-bottom:1.2rem;overflow:hidden}
+    .hero-kicker{display:inline-block;padding:.36rem .68rem;border-radius:999px;background:#7c3aed;color:white;font-size:.72rem;font-weight:800;letter-spacing:.04em;margin-bottom:.85rem}
+    .hero h1{font-size:clamp(2.1rem,4vw,3.35rem);line-height:1.02;letter-spacing:-.035em;margin:0 0 .72rem;color:white;max-width:760px}.hero p{font-size:1.05rem;line-height:1.55;margin:0;color:#d8def5;max-width:760px}
+    .hero-proof{padding:1.05rem 1.15rem;border:1px solid rgba(255,255,255,.18);border-radius:1.15rem;background:rgba(255,255,255,.09);backdrop-filter:blur(8px)}
+    .hero-proof b{display:block;margin:.45rem 0 .6rem;font-size:1.02rem}.proof-status{font-size:.78rem;color:#d8def5}.proof-status:before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:#22d3ee;margin-right:.45rem}
+    .proof-tags{display:flex;flex-wrap:wrap;gap:.45rem}.proof-tags span{padding:.32rem .55rem;border-radius:999px;background:white;color:#111827;font-size:.72rem;font-weight:700}
+    .notice {display:flex;gap:.8rem;align-items:flex-start;padding:.9rem 1rem;border:1px solid #fed7aa;border-radius:1rem;background:#fffaf4;color:#7c2d12;margin:.2rem 0 1.25rem;box-shadow:0 8px 24px rgba(124,45,18,.04)}
+    .notice strong{color:#9a3412}.success-card{padding:1.05rem 1.2rem;border:1px solid #a7f3d0;border-radius:1rem;background:linear-gradient(135deg,#ecfdf5,#f7fffb)}
+    .step {padding:.7rem .82rem;margin:.42rem 0;border:1px solid var(--ss-border);border-radius:.75rem;background:white;box-shadow:0 3px 12px rgba(15,23,42,.035)}
     .muted {color:#64748b;font-size:.88rem}
-    [data-testid="stMetric"] {background:rgba(255,255,255,.84);border:1px solid #dbeafe;padding:.75rem;border-radius:.8rem}
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem;margin:.2rem 0 1rem}.flow span{padding:.55rem .65rem;text-align:center;border-radius:999px;background:#f4f5fa;color:#667085;font-size:.8rem;font-weight:700}.flow span:first-child{background:var(--ss-purple);color:white}
+    .section-label{font-size:.74rem;font-weight:800;letter-spacing:.06em;color:var(--ss-purple);margin-bottom:.1rem}.section-subtitle{color:var(--ss-muted);font-size:.93rem;margin-bottom:.4rem}
+    [data-testid="stForm"] {background:rgba(255,255,255,.94);border:1px solid var(--ss-border);border-radius:1.35rem;padding:1.25rem 1.35rem 1.4rem;box-shadow:0 16px 46px rgba(15,23,42,.06)}
+    [data-testid="stMetric"] {background:rgba(255,255,255,.9);border:1px solid var(--ss-border);padding:.85rem;border-radius:1rem;box-shadow:0 6px 18px rgba(15,23,42,.035)}
+    [data-testid="stTabs"] [data-baseweb="tab-list"]{gap:.35rem;background:white;border:1px solid var(--ss-border);padding:.35rem;border-radius:1rem;box-shadow:0 8px 24px rgba(15,23,42,.04)}
+    [data-testid="stTabs"] [data-baseweb="tab"]{border-radius:.72rem;padding:.5rem .82rem}
+    [data-testid="stTabs"] [aria-selected="true"]{background:#efe9ff;color:var(--ss-purple)}
+    .stButton>button,.stDownloadButton>button,[data-testid="stFormSubmitButton"]>button{border-radius:999px;font-weight:700;min-height:2.75rem;transition:transform .16s ease,box-shadow .16s ease}
+    .stButton>button:hover,.stDownloadButton>button:hover,[data-testid="stFormSubmitButton"]>button:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(91,33,182,.16)}
+    [data-testid="stFormSubmitButton"]>button{background:linear-gradient(90deg,#5b21b6,#7c3aed);border:0;color:white}
+    @media(max-width:760px){.hero{grid-template-columns:1fr;padding:1.45rem}.hero h1{font-size:2.25rem}.topbar{align-items:flex-start}.flow{grid-template-columns:1fr 1fr}.block-container{padding-left:1rem;padding-right:1rem}}
     </style>
-    <div class="hero"><h1>SendSmart</h1>
-      <p>An AI financial participant for student payments: plan with real data, explain every decision, and execute only inside a guarded sandbox.</p>
-      <span class="pill">50 study destinations</span><span class="pill">Real public data</span><span class="pill">Policy-gated agent</span>
+    <div class="topbar"><div class="brand"><div class="brand-mark">S</div><div class="brand-copy"><b>SendSmart</b><span>Student payment intelligence</span></div></div><div class="mode-pill">● Advisory mode</div></div>
+    <div class="hero"><div><span class="hero-kicker">BUILT FOR GLOBAL STUDENTS</span><h1>Know what arrives before you send.</h1>
+      <p>Compare a public FX reference, provider preview, fees, timing and safety checks in one explainable plan.</p></div>
+      <div class="hero-proof"><span class="proof-status">Data health: ready</span><b>Frankfurter · ECB rates</b><div class="proof-tags"><span>50 destinations</span><span>No money moved</span></div></div>
     </div>
-    <div class="notice"><b>Important:</b> the main planner uses real public data and a live Wise preview, but it cannot execute a transfer. The separate Safe execution demo remains entirely simulated.</div>
+    <div class="notice"><span>🛡️</span><div><strong>Clear safety boundary:</strong> the planner uses public data and may request a live Wise preview, but it cannot execute a transfer. The Safe execution demo is simulated.</div></div>
     """,
     unsafe_allow_html=True,
 )
@@ -90,6 +110,12 @@ if "sanctions_matches" not in st.session_state:
     st.session_state.sanctions_matches = []
 if "screened_name" not in st.session_state:
     st.session_state.screened_name = ""
+if "planner_origin" not in st.session_state:
+    st.session_state.planner_origin = "CHN"
+if "planner_destination" not in st.session_state:
+    st.session_state.planner_destination = "GBR"
+if "planner_amount" not in st.session_state:
+    st.session_state.planner_amount = 25000.0
 
 agent: SendSmartOrchestrator = st.session_state.agent
 
@@ -164,23 +190,42 @@ builder_tab, execution_tab, safety_tab, evidence_tab, data_tab, limits_tab = st.
 )
 
 with builder_tab:
-    st.subheader("Build a real-data corridor plan")
-    st.caption("Choose any two of the top 50 study destinations. SendSmart checks public FX, requests a live Wise preview, and explains the evidence.")
+    st.markdown("<div class='section-label'>BUILD YOUR CORRIDOR</div>", unsafe_allow_html=True)
+    st.subheader("Plan a student payment")
+    st.markdown(
+        "<div class='section-subtitle'>Choose any two of the top 50 study destinations. SendSmart verifies the public rate, checks a provider preview, and explains the evidence.</div>"
+        "<div class='flow'><span>1 · Corridor</span><span>2 · Amount</span><span>3 · Priorities</span><span>4 · Review</span></div>",
+        unsafe_allow_html=True,
+    )
+    st.caption("Popular student routes")
+    preset_columns = st.columns(3)
+    presets = [
+        ("🇨🇳 China → UK tuition", "CHN", "GBR", 25000.0),
+        ("🇮🇳 India → Canada living", "IND", "CAN", 500000.0),
+        ("🇲🇾 Malaysia → Australia fees", "MYS", "AUS", 30000.0),
+    ]
+    for column, (label, preset_origin, preset_destination, preset_amount) in zip(preset_columns, presets):
+        with column:
+            if st.button(label, width="stretch", key=f"preset_{preset_origin}_{preset_destination}"):
+                st.session_state.planner_origin = preset_origin
+                st.session_state.planner_destination = preset_destination
+                st.session_state.planner_amount = preset_amount
+                st.rerun()
     with st.form("corridor_builder"):
         left, middle, right = st.columns([1, .12, 1])
         with left:
-            origin_iso = st.selectbox("Sending from", options, index=options.index("CHN"), format_func=option_label)
+            origin_iso = st.selectbox("Sending from", options, format_func=option_label, key="planner_origin")
         with middle:
             st.markdown("<div style='text-align:center;font-size:2rem;padding-top:1.55rem'>→</div>", unsafe_allow_html=True)
         with right:
-            destination_iso = st.selectbox("Studying in", options, index=options.index("GBR"), format_func=option_label)
+            destination_iso = st.selectbox("Studying in", options, format_func=option_label, key="planner_destination")
         origin, destination = by_iso[origin_iso], by_iso[destination_iso]
         col1, col2, col3 = st.columns(3)
         with col1:
             amount_mode_label = st.radio("Amount means", [f"I send {origin.currency}", f"Recipient gets {destination.currency}"])
             amount_mode = AmountMode.SEND if amount_mode_label.startswith("I send") else AmountMode.RECIPIENT
         with col2:
-            amount = st.number_input("Amount", min_value=1.0, value=25000.0, step=100.0)
+            amount = st.number_input("Amount", min_value=1.0, step=100.0, key="planner_amount")
             purpose = st.selectbox("Purpose", ["Tuition", "Living costs", "Accommodation deposit", "Application fee"])
         with col3:
             priority = st.radio("Optimise for", ["balanced", "cheapest", "fastest"], horizontal=True)
