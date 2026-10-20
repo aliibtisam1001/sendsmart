@@ -28,7 +28,10 @@ build/
 .chart-data-*/
 .tmp/
 presentation/
+output/
+slides/
 *.docx
+*.pptx
 
 # System & IDE files
 .DS_Store
