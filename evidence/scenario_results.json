@@ -8,7 +8,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "523358b2-0bf4-4f6e-affb-774bc2ba5c47",
+      "request_id": "abd02374-35b2-4d07-a068-dceee94a5508",
       "user_id": "aisha",
       "amount": "9000",
       "currency_from": "MYR",
@@ -37,7 +37,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "523358b2-0bf4-4f6e-affb-774bc2ba5c47",
+      "request_id": "abd02374-35b2-4d07-a068-dceee94a5508",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -315,7 +315,7 @@
       ]
     },
     "value_report": {
-      "request_id": "523358b2-0bf4-4f6e-affb-774bc2ba5c47",
+      "request_id": "abd02374-35b2-4d07-a068-dceee94a5508",
       "selected_provider": "ScholarTransfer",
       "savings_vs_bank_send": "685.22",
       "savings_vs_bank_usd": "163.15",
@@ -324,7 +324,7 @@
       "savings_vs_default_usd": "8.76",
       "savings_vs_default_percent": "16.55",
       "deadline_risk_avoided": 0,
-      "comparison_seconds": "0.001",
+      "comparison_seconds": "0.002",
       "estimated_manual_minutes": "24",
       "risk_events_blocked": [],
       "is_mock": true
@@ -333,16 +333,16 @@
       "typed approval"
     ],
     "outcome": {
-      "receipt_id": "sandbox-e2cae2c0-bce5-4d38-af4a-a27906569be2",
-      "request_id": "523358b2-0bf4-4f6e-affb-774bc2ba5c47",
+      "receipt_id": "sandbox-a77ee991-c4c7-41a5-9e0b-636360536e8d",
+      "request_id": "abd02374-35b2-4d07-a068-dceee94a5508",
       "provider": "ScholarTransfer",
       "status": "PENDING",
       "send_amount": "39889.20",
       "send_currency": "MYR",
       "recipient_amount": "9000.00",
       "receive_currency": "GBP",
-      "created_at": "2026-10-20T09:05:28.016774+00:00",
-      "cancel_until": "2026-10-20T09:06:28.016774+00:00",
+      "created_at": "2026-10-20T10:24:41.522136+00:00",
+      "cancel_until": "2026-10-20T10:25:41.522136+00:00",
       "disclosure": "SIMULATED PAYMENT - NO REAL FUNDS MOVED"
     }
   },
@@ -355,7 +355,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "8868bca8-49ea-414d-b3d4-e47080428473",
+      "request_id": "739eec05-9a66-40ea-90e7-d8beabd9f925",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -384,7 +384,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "8868bca8-49ea-414d-b3d4-e47080428473",
+      "request_id": "739eec05-9a66-40ea-90e7-d8beabd9f925",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -662,7 +662,7 @@
       ]
     },
     "value_report": {
-      "request_id": "8868bca8-49ea-414d-b3d4-e47080428473",
+      "request_id": "739eec05-9a66-40ea-90e7-d8beabd9f925",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -680,16 +680,16 @@
       "confirm"
     ],
     "outcome": {
-      "receipt_id": "sandbox-8c03e03f-ceb5-4ac2-8d0f-79f6130fcffd",
-      "request_id": "8868bca8-49ea-414d-b3d4-e47080428473",
+      "receipt_id": "sandbox-31357688-ada6-4675-9e11-d87eee04016a",
+      "request_id": "739eec05-9a66-40ea-90e7-d8beabd9f925",
       "provider": "SwiftFox Student",
       "status": "PENDING",
       "send_amount": "300.00",
       "send_currency": "MYR",
       "recipient_amount": "67.72",
       "receive_currency": "GBP",
-      "created_at": "2026-10-20T09:05:28.083858+00:00",
-      "cancel_until": "2026-10-20T09:06:28.083858+00:00",
+      "created_at": "2026-10-20T10:24:41.595209+00:00",
+      "cancel_until": "2026-10-20T10:25:41.595209+00:00",
       "disclosure": "SIMULATED PAYMENT - NO REAL FUNDS MOVED"
     }
   },
@@ -717,7 +717,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "b2f5c2cf-5929-451e-b6ca-7c632467342c",
+      "request_id": "7e481de6-6eb4-43f9-9be9-ece1c0c3738c",
       "user_id": "aisha",
       "amount": "500",
       "currency_from": "MYR",
@@ -746,7 +746,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "b2f5c2cf-5929-451e-b6ca-7c632467342c",
+      "request_id": "7e481de6-6eb4-43f9-9be9-ece1c0c3738c",
       "intent_type": "COMPARE_ONLY",
       "steps": [
         {
@@ -963,7 +963,7 @@
       ]
     },
     "value_report": {
-      "request_id": "b2f5c2cf-5929-451e-b6ca-7c632467342c",
+      "request_id": "7e481de6-6eb4-43f9-9be9-ece1c0c3738c",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "29.75",
       "savings_vs_bank_usd": "7.08",
@@ -1001,7 +1001,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "30583adb-988d-4c80-86b5-4a0e0c2fa5c3",
+      "request_id": "1217190f-7fa4-4581-a427-536b22a56532",
       "user_id": "aisha",
       "amount": "500",
       "currency_from": "MYR",
@@ -1030,7 +1030,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "30583adb-988d-4c80-86b5-4a0e0c2fa5c3",
+      "request_id": "1217190f-7fa4-4581-a427-536b22a56532",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -1308,7 +1308,7 @@
       ]
     },
     "value_report": {
-      "request_id": "30583adb-988d-4c80-86b5-4a0e0c2fa5c3",
+      "request_id": "1217190f-7fa4-4581-a427-536b22a56532",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "56.81",
       "savings_vs_bank_usd": "13.53",
@@ -1332,7 +1332,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "6f42bd52-82ac-43c0-bdb7-54922fdfe299",
+      "request_id": "cb4019de-0ada-4d66-85ab-6732fd16729a",
       "user_id": "aisha",
       "amount": "500",
       "currency_from": "MYR",
@@ -1361,7 +1361,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "6f42bd52-82ac-43c0-bdb7-54922fdfe299",
+      "request_id": "cb4019de-0ada-4d66-85ab-6732fd16729a",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -1638,7 +1638,7 @@
       ]
     },
     "value_report": {
-      "request_id": "6f42bd52-82ac-43c0-bdb7-54922fdfe299",
+      "request_id": "cb4019de-0ada-4d66-85ab-6732fd16729a",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "56.81",
       "savings_vs_bank_usd": "13.53",
@@ -1664,7 +1664,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "2d13ebb4-5dd4-4558-89a6-28447e89ab1d",
+      "request_id": "5bd57584-d5d1-4843-a2a3-88eed2709aa8",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -1693,7 +1693,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "2d13ebb4-5dd4-4558-89a6-28447e89ab1d",
+      "request_id": "5bd57584-d5d1-4843-a2a3-88eed2709aa8",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -1970,7 +1970,7 @@
       ]
     },
     "value_report": {
-      "request_id": "2d13ebb4-5dd4-4558-89a6-28447e89ab1d",
+      "request_id": "5bd57584-d5d1-4843-a2a3-88eed2709aa8",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -1996,7 +1996,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "179182d3-77b6-4f82-bc4c-871732665f5c",
+      "request_id": "88b5efa4-f5b5-41e9-8a10-9a2aa8dbc4b2",
       "user_id": "aisha",
       "amount": "9000.00",
       "currency_from": "MYR",
@@ -2025,7 +2025,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "179182d3-77b6-4f82-bc4c-871732665f5c",
+      "request_id": "88b5efa4-f5b5-41e9-8a10-9a2aa8dbc4b2",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -2302,7 +2302,7 @@
       ]
     },
     "value_report": {
-      "request_id": "179182d3-77b6-4f82-bc4c-871732665f5c",
+      "request_id": "88b5efa4-f5b5-41e9-8a10-9a2aa8dbc4b2",
       "selected_provider": "ScholarTransfer",
       "savings_vs_bank_send": "685.22",
       "savings_vs_bank_usd": "163.15",
@@ -2328,7 +2328,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "0cb039e0-422d-48ce-880e-56a3e1680c44",
+      "request_id": "e9bf36c4-1360-4edb-b109-57fce358a448",
       "user_id": "aisha",
       "amount": "9000.00",
       "currency_from": "MYR",
@@ -2357,7 +2357,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "0cb039e0-422d-48ce-880e-56a3e1680c44",
+      "request_id": "e9bf36c4-1360-4edb-b109-57fce358a448",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -2634,7 +2634,7 @@
       ]
     },
     "value_report": {
-      "request_id": "0cb039e0-422d-48ce-880e-56a3e1680c44",
+      "request_id": "e9bf36c4-1360-4edb-b109-57fce358a448",
       "selected_provider": "ScholarTransfer",
       "savings_vs_bank_send": "685.22",
       "savings_vs_bank_usd": "163.15",
@@ -2660,7 +2660,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "af31393c-02a9-4277-abd2-81559e06e7ae",
+      "request_id": "6367f10c-5aad-41d2-86c7-a1027553f7a4",
       "user_id": "aisha",
       "amount": "50000",
       "currency_from": "MYR",
@@ -2689,7 +2689,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "af31393c-02a9-4277-abd2-81559e06e7ae",
+      "request_id": "6367f10c-5aad-41d2-86c7-a1027553f7a4",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -2968,7 +2968,7 @@
       ]
     },
     "value_report": {
-      "request_id": "af31393c-02a9-4277-abd2-81559e06e7ae",
+      "request_id": "6367f10c-5aad-41d2-86c7-a1027553f7a4",
       "selected_provider": "ScholarTransfer",
       "savings_vs_bank_send": "844.00",
       "savings_vs_bank_usd": "200.95",
@@ -2977,7 +2977,7 @@
       "savings_vs_default_usd": "11.19",
       "savings_vs_default_percent": "16.91",
       "deadline_risk_avoided": 0,
-      "comparison_seconds": "0.002",
+      "comparison_seconds": "0.001",
       "estimated_manual_minutes": "24",
       "risk_events_blocked": [
         "HARD_LIMIT_EXCEEDED",
@@ -2995,7 +2995,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "ba11dbf6-7890-4b93-affb-b05ed4a2c57a",
+      "request_id": "f67bec68-f3fc-428d-a2e8-a635db06f855",
       "user_id": "carlos",
       "amount": "150000",
       "currency_from": "MXN",
@@ -3024,7 +3024,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "ba11dbf6-7890-4b93-affb-b05ed4a2c57a",
+      "request_id": "f67bec68-f3fc-428d-a2e8-a635db06f855",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -3301,7 +3301,7 @@
       ]
     },
     "value_report": {
-      "request_id": "ba11dbf6-7890-4b93-affb-b05ed4a2c57a",
+      "request_id": "f67bec68-f3fc-428d-a2e8-a635db06f855",
       "selected_provider": "ScholarTransfer",
       "savings_vs_bank_send": "2494.00",
       "savings_vs_bank_usd": "138.56",
@@ -3327,7 +3327,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "1dd3f2c1-7cee-418e-adf5-8937392e5df8",
+      "request_id": "9078d283-0b4a-45f3-98c5-d88d3ad482b0",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -3356,7 +3356,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "1dd3f2c1-7cee-418e-adf5-8937392e5df8",
+      "request_id": "9078d283-0b4a-45f3-98c5-d88d3ad482b0",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -3634,7 +3634,7 @@
       ]
     },
     "value_report": {
-      "request_id": "1dd3f2c1-7cee-418e-adf5-8937392e5df8",
+      "request_id": "9078d283-0b4a-45f3-98c5-d88d3ad482b0",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -3643,7 +3643,7 @@
       "savings_vs_default_usd": "0.00",
       "savings_vs_default_percent": "0.00",
       "deadline_risk_avoided": 0,
-      "comparison_seconds": "0.002",
+      "comparison_seconds": "0.001",
       "estimated_manual_minutes": "24",
       "risk_events_blocked": [],
       "is_mock": true
@@ -3669,7 +3669,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "ba84c166-dd9a-4c37-b105-afdb4109e767",
+      "request_id": "695d3b91-9e0d-4264-962a-85c69533c2ab",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -3698,7 +3698,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "ba84c166-dd9a-4c37-b105-afdb4109e767",
+      "request_id": "695d3b91-9e0d-4264-962a-85c69533c2ab",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -3976,7 +3976,7 @@
       ]
     },
     "value_report": {
-      "request_id": "ba84c166-dd9a-4c37-b105-afdb4109e767",
+      "request_id": "695d3b91-9e0d-4264-962a-85c69533c2ab",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -3985,7 +3985,7 @@
       "savings_vs_default_usd": "0.00",
       "savings_vs_default_percent": "0.00",
       "deadline_risk_avoided": 0,
-      "comparison_seconds": "0.002",
+      "comparison_seconds": "0.001",
       "estimated_manual_minutes": "24",
       "risk_events_blocked": [],
       "is_mock": true
@@ -4011,7 +4011,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "33e4fd63-3b79-4cdf-8eba-9d880f565d75",
+      "request_id": "4a6c9fb0-6a04-4d5e-b611-17dc876be643",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -4040,7 +4040,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "33e4fd63-3b79-4cdf-8eba-9d880f565d75",
+      "request_id": "4a6c9fb0-6a04-4d5e-b611-17dc876be643",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -4318,7 +4318,7 @@
       ]
     },
     "value_report": {
-      "request_id": "33e4fd63-3b79-4cdf-8eba-9d880f565d75",
+      "request_id": "4a6c9fb0-6a04-4d5e-b611-17dc876be643",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -4353,7 +4353,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "b7d710ca-4d5f-4027-953e-8c761a035e94",
+      "request_id": "506500c9-3ae0-4b00-b23b-0125b7c72d36",
       "user_id": "aisha",
       "amount": "1000",
       "currency_from": "MYR",
@@ -4382,7 +4382,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "b7d710ca-4d5f-4027-953e-8c761a035e94",
+      "request_id": "506500c9-3ae0-4b00-b23b-0125b7c72d36",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -4660,7 +4660,7 @@
       ]
     },
     "value_report": {
-      "request_id": "b7d710ca-4d5f-4027-953e-8c761a035e94",
+      "request_id": "506500c9-3ae0-4b00-b23b-0125b7c72d36",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "37.50",
       "savings_vs_bank_usd": "8.93",
@@ -4712,7 +4712,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "577212db-db46-4b4f-a5cc-c8f6373560cd",
+      "request_id": "bfa416d3-aa42-433f-94f0-5a319daa0862",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -4741,7 +4741,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "577212db-db46-4b4f-a5cc-c8f6373560cd",
+      "request_id": "bfa416d3-aa42-433f-94f0-5a319daa0862",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -5019,7 +5019,7 @@
       ]
     },
     "value_report": {
-      "request_id": "577212db-db46-4b4f-a5cc-c8f6373560cd",
+      "request_id": "bfa416d3-aa42-433f-94f0-5a319daa0862",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -5037,7 +5037,7 @@
       "reject"
     ],
     "outcome": {
-      "request_id": "577212db-db46-4b4f-a5cc-c8f6373560cd",
+      "request_id": "bfa416d3-aa42-433f-94f0-5a319daa0862",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -5183,7 +5183,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "de7fc859-4d53-40d5-8357-6e350eac400a",
+      "request_id": "95fe2a7d-970c-4a66-ac90-4dfe050e4bb3",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -5212,7 +5212,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "de7fc859-4d53-40d5-8357-6e350eac400a",
+      "request_id": "95fe2a7d-970c-4a66-ac90-4dfe050e4bb3",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -5490,7 +5490,7 @@
       ]
     },
     "value_report": {
-      "request_id": "de7fc859-4d53-40d5-8357-6e350eac400a",
+      "request_id": "95fe2a7d-970c-4a66-ac90-4dfe050e4bb3",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -5509,16 +5509,16 @@
       "cancel"
     ],
     "outcome": {
-      "receipt_id": "sandbox-3b48931b-3daf-4a76-a862-304a1c69510f",
-      "request_id": "de7fc859-4d53-40d5-8357-6e350eac400a",
+      "receipt_id": "sandbox-02146d89-c91f-464d-9710-dd4d57c22ae2",
+      "request_id": "95fe2a7d-970c-4a66-ac90-4dfe050e4bb3",
       "provider": "SwiftFox Student",
       "status": "CANCELLED",
       "send_amount": "300.00",
       "send_currency": "MYR",
       "recipient_amount": "67.72",
       "receive_currency": "GBP",
-      "created_at": "2026-10-20T09:05:29.523935+00:00",
-      "cancel_until": "2026-10-20T09:06:29.523935+00:00",
+      "created_at": "2026-10-20T10:24:42.536872+00:00",
+      "cancel_until": "2026-10-20T10:25:42.536872+00:00",
       "disclosure": "SIMULATED PAYMENT - NO REAL FUNDS MOVED"
     }
   },
@@ -5531,7 +5531,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "f1e4760e-bf82-4c72-a5fb-e10ce4428006",
+      "request_id": "cd0dff42-7f8e-458a-9fb0-e589a9121403",
       "user_id": "aisha",
       "amount": "300",
       "currency_from": "MYR",
@@ -5560,7 +5560,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "f1e4760e-bf82-4c72-a5fb-e10ce4428006",
+      "request_id": "cd0dff42-7f8e-458a-9fb0-e589a9121403",
       "intent_type": "SEND_LIVING_COSTS",
       "steps": [
         {
@@ -5838,7 +5838,7 @@
       ]
     },
     "value_report": {
-      "request_id": "f1e4760e-bf82-4c72-a5fb-e10ce4428006",
+      "request_id": "cd0dff42-7f8e-458a-9fb0-e589a9121403",
       "selected_provider": "SwiftFox Student",
       "savings_vs_bank_send": "26.65",
       "savings_vs_bank_usd": "6.35",
@@ -5847,7 +5847,7 @@
       "savings_vs_default_usd": "0.00",
       "savings_vs_default_percent": "0.00",
       "deadline_risk_avoided": 0,
-      "comparison_seconds": "0.001",
+      "comparison_seconds": "0.002",
       "estimated_manual_minutes": "24",
       "risk_events_blocked": [],
       "is_mock": true
@@ -5886,7 +5886,7 @@
     "actual": "pass",
     "error": null,
     "input": {
-      "request_id": "36d134b9-4445-40c7-a4ae-f09f3c59c1fe",
+      "request_id": "eb75f213-1e52-4bf3-8636-9eee827fdba9",
       "user_id": "aisha",
       "amount": "9000",
       "currency_from": "MYR",
@@ -5915,7 +5915,7 @@
       "ambiguities": []
     },
     "plan": {
-      "request_id": "36d134b9-4445-40c7-a4ae-f09f3c59c1fe",
+      "request_id": "eb75f213-1e52-4bf3-8636-9eee827fdba9",
       "intent_type": "PAY_TUITION",
       "steps": [
         {
@@ -6193,7 +6193,7 @@
       ]
     },
     "value_report": {
-      "request_id": "36d134b9-4445-40c7-a4ae-f09f3c59c1fe",
+      "request_id": "eb75f213-1e52-4bf3-8636-9eee827fdba9",
       "selected_provider": "ScholarTransfer",
       "savings_vs_bank_send": "685.22",
       "savings_vs_bank_usd": "163.15",

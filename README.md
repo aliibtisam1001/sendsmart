@@ -63,12 +63,14 @@ python -m pip install -e ".[ui,llm,dev]"
 python -m pytest
 python scenarios/run_scenarios.py
 python evaluation/eval_intent.py
-python -m streamlit run src/sendsmart/ui/app.py
+python -m streamlit run app.py
 ```
 
 GNU Make users can run `make install`, `make test`, `make scenarios`, `make eval`, and `make run`.
 
 No API key is required. The corridor builder attempts live Frankfurter and Wise requests; Frankfurter has a bundled public fallback, while unavailable Wise previews are labelled rather than fabricated. World Bank and UN snapshots are bundled for reproducibility. If `ANTHROPIC_API_KEY` is absent, the tested deterministic fallback remains fully usable.
+
+For Streamlit Community Cloud, use `app.py` as the main file and follow [the deployment guide](docs/DEPLOYMENT.md). Runtime dependencies are intentionally separated from test and dataset-build dependencies.
 
 ## Permission tiers
 

@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
+import uuid
 from datetime import date, timedelta
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
 import streamlit as st
@@ -16,7 +18,7 @@ from sendsmart.agent.orchestrator import PreparedTransfer, SendSmartOrchestrator
 from sendsmart.control.user_control import expected_approval_phrase  # noqa: E402
 from sendsmart.core.advisory import CorridorPlan, build_corridor_plan  # noqa: E402
 from sendsmart.core.benchmarks import find_world_bank_corridor, load_world_bank_snapshot  # noqa: E402
-from sendsmart.core.decision import assess_quote, build_decision_report, decision_status, reference_amounts  # noqa: E402
+from sendsmart.core.decision import assess_quote, build_decision_report, decision_status  # noqa: E402
 from sendsmart.core.destinations import load_destination_dataset, load_destinations  # noqa: E402
 from sendsmart.core.fx import get_public_snapshot  # noqa: E402
 from sendsmart.integrations.sanctions import load_un_snapshot, screen_un_name  # noqa: E402
@@ -69,7 +71,9 @@ if st.session_state.get("state_schema_version") != STATE_SCHEMA_VERSION:
     st.session_state.state_schema_version = STATE_SCHEMA_VERSION
 
 if "agent" not in st.session_state:
-    st.session_state.agent = SendSmartOrchestrator(ROOT / "evidence" / "ui_audit_log.jsonl")
+    audit_dir = Path(tempfile.gettempdir()) / "sendsmart-audits"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    st.session_state.agent = SendSmartOrchestrator(audit_dir / f"session-{uuid.uuid4()}.jsonl")
 if "prepared" not in st.session_state:
     st.session_state.prepared = None
 if "last_result" not in st.session_state:
@@ -112,6 +116,19 @@ def recommendation_reason(quote: WiseQuote, priority: str) -> str:
     if priority == "cheapest":
         return f"{route} has the lowest disclosed fee among the enabled options."
     return f"{route} favors a bank-transfer route with a low disclosed fee for a balanced choice."
+
+
+def reference_amounts(plan: CorridorPlan) -> tuple[Decimal, Decimal]:
+    """Calculate an always-available, before-fees reference conversion."""
+
+    if plan.request.amount_mode == AmountMode.SEND:
+        source = plan.request.amount
+        target = source * plan.reference_rate
+    else:
+        target = plan.request.amount
+        source = target / plan.reference_rate
+    money = Decimal("0.01")
+    return source.quantize(money, rounding=ROUND_HALF_UP), target.quantize(money, rounding=ROUND_HALF_UP)
 
 
 def wise_rows(quotes: list[WiseQuote]) -> list[dict[str, str]]:
