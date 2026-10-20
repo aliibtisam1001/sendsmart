@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import date, timedelta
+from decimal import Decimal
 from pathlib import Path
 
 import streamlit as st
@@ -13,23 +14,59 @@ if str(ROOT / "src") not in sys.path:
 
 from sendsmart.agent.orchestrator import PreparedTransfer, SendSmartOrchestrator  # noqa: E402
 from sendsmart.control.user_control import expected_approval_phrase  # noqa: E402
-from sendsmart.models import Tier  # noqa: E402
+from sendsmart.core.advisory import CorridorPlan, build_corridor_plan  # noqa: E402
+from sendsmart.core.benchmarks import find_world_bank_corridor, load_world_bank_snapshot  # noqa: E402
+from sendsmart.core.decision import assess_quote, build_decision_report, decision_status, reference_amounts  # noqa: E402
+from sendsmart.core.destinations import load_destination_dataset, load_destinations  # noqa: E402
+from sendsmart.core.fx import get_public_snapshot  # noqa: E402
+from sendsmart.integrations.sanctions import load_un_snapshot, screen_un_name  # noqa: E402
+from sendsmart.integrations.wise import WiseQuote, fetch_wise_quotes  # noqa: E402
+from sendsmart.models import AmountMode, Tier  # noqa: E402
 
 
-st.set_page_config(page_title="SendSmart", page_icon="🌐", layout="wide")
+st.set_page_config(page_title="SendSmart | Global study payments", page_icon="🌏", layout="wide")
 st.markdown(
     """
     <style>
-    .sandbox {background:#3b0764;color:#fff;padding:.65rem 1rem;border-radius:.6rem;font-weight:700;letter-spacing:.04em}
-    .step {padding:.55rem .7rem;margin:.25rem 0;border:1px solid #ddd;border-radius:.45rem}
-    .muted {color:#666;font-size:.9rem}
+    .stApp {background: linear-gradient(145deg,#f8fafc 0%,#eef6ff 48%,#f7f5ff 100%);}
+    .block-container {max-width: 1240px; padding-top: 1.5rem; padding-bottom: 4rem;}
+    .hero {padding:1.5rem 1.6rem;border-radius:1.2rem;background:linear-gradient(120deg,#082f49,#1d4ed8 58%,#6d28d9);color:white;box-shadow:0 18px 42px rgba(30,64,175,.18);margin-bottom:1rem}
+    .hero h1 {font-size:2.15rem;margin:0 0 .35rem 0;color:white}.hero p {font-size:1.03rem;margin:0;color:#dbeafe}
+    .pill {display:inline-block;padding:.28rem .62rem;border-radius:999px;background:rgba(255,255,255,.16);margin:.75rem .35rem 0 0;font-size:.82rem;font-weight:700}
+    .notice {padding:.8rem 1rem;border:1px solid #fdba74;border-left:5px solid #f97316;border-radius:.7rem;background:#fff7ed;color:#7c2d12;margin:.5rem 0 1rem}
+    .success-card {padding:1.05rem 1.2rem;border:1px solid #86efac;border-radius:.9rem;background:#f0fdf4}
+    .step {padding:.55rem .72rem;margin:.32rem 0;border:1px solid #dbeafe;border-radius:.55rem;background:white}
+    .muted {color:#64748b;font-size:.88rem}
+    [data-testid="stMetric"] {background:rgba(255,255,255,.84);border:1px solid #dbeafe;padding:.75rem;border-radius:.8rem}
     </style>
-    <div class="sandbox">SANDBOX / MOCK DATA — NO REAL PRICES OR FUNDS</div>
+    <div class="hero"><h1>SendSmart</h1>
+      <p>An AI financial participant for student payments: plan with real data, explain every decision, and execute only inside a guarded sandbox.</p>
+      <span class="pill">50 study destinations</span><span class="pill">Real public data</span><span class="pill">Policy-gated agent</span>
+    </div>
+    <div class="notice"><b>Important:</b> the main planner uses real public data and a live Wise preview, but it cannot execute a transfer. The separate Safe execution demo remains entirely simulated.</div>
     """,
     unsafe_allow_html=True,
 )
-st.title("SendSmart")
-st.caption("A security-first cross-border and student finance assistant. The LLM explains; deterministic code decides.")
+
+destinations = load_destinations()
+destination_data = load_destination_dataset()
+by_iso = {item.iso3: item for item in destinations}
+options = [item.iso3 for item in destinations]
+
+STATE_SCHEMA_VERSION = 3
+if st.session_state.get("state_schema_version") != STATE_SCHEMA_VERSION:
+    # Streamlit preserves Python objects across hot reloads. Clear only the
+    # planner fields whose dataclass shape may have changed between versions.
+    for key in (
+        "corridor_plan",
+        "wise_quotes",
+        "wise_error",
+        "corridor_benchmark",
+        "sanctions_matches",
+        "screened_name",
+    ):
+        st.session_state.pop(key, None)
+    st.session_state.state_schema_version = STATE_SCHEMA_VERSION
 
 if "agent" not in st.session_state:
     st.session_state.agent = SendSmartOrchestrator(ROOT / "evidence" / "ui_audit_log.jsonl")
@@ -37,16 +74,67 @@ if "prepared" not in st.session_state:
     st.session_state.prepared = None
 if "last_result" not in st.session_state:
     st.session_state.last_result = None
+if "corridor_plan" not in st.session_state:
+    st.session_state.corridor_plan = None
+if "wise_quotes" not in st.session_state:
+    st.session_state.wise_quotes = []
+if "wise_error" not in st.session_state:
+    st.session_state.wise_error = None
+if "corridor_benchmark" not in st.session_state:
+    st.session_state.corridor_benchmark = None
+if "sanctions_matches" not in st.session_state:
+    st.session_state.sanctions_matches = []
+if "screened_name" not in st.session_state:
+    st.session_state.screened_name = ""
 
 agent: SendSmartOrchestrator = st.session_state.agent
 
 
-def render_plan(prepared: PreparedTransfer) -> None:
-    st.subheader("Visible plan")
+def option_label(iso3: str) -> str:
+    return by_iso[iso3].label
+
+
+def choose_wise_quote(quotes: list[WiseQuote], priority: str) -> WiseQuote | None:
+    if not quotes:
+        return None
+    if priority == "fastest":
+        return min(quotes, key=lambda quote: (quote.estimated_delivery is None, quote.estimated_delivery, quote.fee))
+    if priority == "cheapest":
+        return min(quotes, key=lambda quote: (quote.fee, -quote.target_amount))
+    bank_options = [quote for quote in quotes if quote.pay_in == "BANK_TRANSFER"]
+    return min(bank_options or quotes, key=lambda quote: (quote.fee, -quote.target_amount))
+
+
+def recommendation_reason(quote: WiseQuote, priority: str) -> str:
+    route = f"{quote.pay_in.replace('_', ' ').title()} to {quote.pay_out.replace('_', ' ').title()}"
+    if priority == "fastest":
+        return f"{route} has the earliest provider ETA among the enabled options."
+    if priority == "cheapest":
+        return f"{route} has the lowest disclosed fee among the enabled options."
+    return f"{route} favors a bank-transfer route with a low disclosed fee for a balanced choice."
+
+
+def wise_rows(quotes: list[WiseQuote]) -> list[dict[str, str]]:
+    return [
+        {
+            "Provider": "Wise",
+            "Pay in": quote.pay_in.replace("_", " ").title(),
+            "Pay out": quote.pay_out.replace("_", " ").title(),
+            f"Send ({quote.source_currency})": f"{quote.source_amount:,.2f}",
+            f"Recipient gets ({quote.target_currency})": f"{quote.target_amount:,.2f}",
+            f"Fee ({quote.source_currency})": f"{quote.fee:,.2f}",
+            "Provider ETA": quote.estimated_delivery_text,
+            "Status": "Preview only — not executable",
+        }
+        for quote in quotes
+    ]
+
+
+def render_execution_plan(prepared: PreparedTransfer) -> None:
     icons = {"pending": "○", "running": "◉", "done": "✓", "failed": "✕", "skipped": "–"}
     for step in prepared.plan.steps:
         status = step.status.value
-        checkpoint = " — USER CHECKPOINT" if step.requires_user_checkpoint else ""
+        checkpoint = " · USER CHECKPOINT" if step.requires_user_checkpoint else ""
         st.markdown(
             f"<div class='step'><b>{icons[status]} {step.id}. {step.action}{checkpoint}</b><br>"
             f"<span class='muted'>{step.rationale}</span></div>",
@@ -54,12 +142,204 @@ def render_plan(prepared: PreparedTransfer) -> None:
         )
 
 
-chat_tab, compare_tab, attack_tab, audit_tab, value_tab, about_tab = st.tabs(
-    ["Chat & Plan", "Compare", "Attack Lab", "Audit Log", "Value", "About / Limitations"]
+builder_tab, execution_tab, safety_tab, evidence_tab, data_tab, limits_tab = st.tabs(
+    ["🌐 Plan", "🔐 Sandbox task", "🧪 Attack lab", "🏆 Evidence", "📊 Sources", "ℹ️ Limits"]
 )
 
-with chat_tab:
-    persona = st.selectbox("Persona", ["Aisha (MY → UK)", "Carlos (MX → US)"])
+with builder_tab:
+    st.subheader("Build a real-data corridor plan")
+    st.caption("Choose any two of the top 50 study destinations. SendSmart checks public FX, requests a live Wise preview, and explains the evidence.")
+    with st.form("corridor_builder"):
+        left, middle, right = st.columns([1, .12, 1])
+        with left:
+            origin_iso = st.selectbox("Sending from", options, index=options.index("CHN"), format_func=option_label)
+        with middle:
+            st.markdown("<div style='text-align:center;font-size:2rem;padding-top:1.55rem'>→</div>", unsafe_allow_html=True)
+        with right:
+            destination_iso = st.selectbox("Studying in", options, index=options.index("GBR"), format_func=option_label)
+        origin, destination = by_iso[origin_iso], by_iso[destination_iso]
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            amount_mode_label = st.radio("Amount means", [f"I send {origin.currency}", f"Recipient gets {destination.currency}"])
+            amount_mode = AmountMode.SEND if amount_mode_label.startswith("I send") else AmountMode.RECIPIENT
+        with col2:
+            amount = st.number_input("Amount", min_value=1.0, value=25000.0, step=100.0)
+            purpose = st.selectbox("Purpose", ["Tuition", "Living costs", "Accommodation deposit", "Application fee"])
+        with col3:
+            priority = st.radio("Optimise for", ["balanced", "cheapest", "fastest"], horizontal=True)
+            deadline = st.date_input("Needed by", value=date.today() + timedelta(days=10), min_value=date.today())
+        recipient_name = st.text_input(
+            "University or recipient name (optional)",
+            placeholder="Used only for preliminary UN public-list screening",
+        )
+        submitted = st.form_submit_button("Verify rate and build my plan", type="primary", width="stretch")
+
+    if submitted:
+        if origin_iso == destination_iso:
+            st.error("Choose two different countries to create a cross-border plan.")
+        else:
+            with st.spinner("Checking Frankfurter, Wise, World Bank and the UN public list…"):
+                try:
+                    fx = get_public_snapshot(allow_live=True)
+                    plan = build_corridor_plan(
+                        origin, destination, Decimal(str(amount)), amount_mode, priority,
+                        purpose.lower(), deadline, fx,
+                    )
+                    st.session_state.corridor_plan = plan
+                    st.session_state.corridor_benchmark = find_world_bank_corridor(origin.iso3, destination.iso3)
+                    st.session_state.screened_name = recipient_name.strip()
+                    st.session_state.sanctions_matches = (
+                        screen_un_name(recipient_name.strip()) if recipient_name.strip() else []
+                    )
+                    try:
+                        st.session_state.wise_quotes = fetch_wise_quotes(
+                            origin.currency, destination.currency, Decimal(str(amount)), amount_mode,
+                        )
+                        st.session_state.wise_error = None if st.session_state.wise_quotes else "Wise returned no enabled payment option for this request."
+                    except Exception:
+                        st.session_state.wise_quotes = []
+                        st.session_state.wise_error = "The provider endpoint could not be reached from this environment."
+                except Exception as exc:
+                    st.error(f"Could not build the plan: {exc}")
+
+    plan = st.session_state.corridor_plan
+    if isinstance(plan, CorridorPlan):
+        quotes: list[WiseQuote] = st.session_state.wise_quotes
+        plan_priority = getattr(plan, "priority", priority)
+        selected = choose_wise_quote(quotes, plan_priority)
+        benchmark = st.session_state.corridor_benchmark
+        assessment = assess_quote(selected, plan.reference_rate, plan.request.deadline) if selected else None
+        reference_source, reference_target = reference_amounts(plan)
+        screened_name = st.session_state.screened_name
+        matches = st.session_state.sanctions_matches
+        plan_status, status_reason = decision_status(selected, screened_name, matches, assessment)
+        is_live = "(live)" in plan.fx.source
+        st.divider()
+        status_text = "LIVE PUBLIC RATE" if is_live else "CACHED PUBLIC RATE"
+        status_icon = "🟢" if is_live else "🟠"
+        st.markdown(
+            f"<div class='success-card'><b>{status_icon} {status_text}</b><br>"
+            f"{plan.origin.country} ({plan.origin.currency}) → {plan.destination.country} ({plan.destination.currency})<br>"
+            f"<span class='muted'>Source: {plan.fx.source} · corridor reference date "
+            f"{plan.fx.rate_date(plan.origin.currency, plan.destination.currency).isoformat()}</span></div>",
+            unsafe_allow_html=True,
+        )
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Reference FX rate", f"1 {plan.origin.currency} = {plan.reference_rate:,.6f} {plan.destination.currency}")
+        if selected:
+            m2.metric("Real preview", f"Wise · {selected.pay_in.replace('_', ' ').title()}")
+            m3.metric("Recipient gets", f"{selected.target_amount:,.2f} {selected.target_currency}")
+            m4.metric("Quoted fee", f"{selected.fee:,.2f} {selected.source_currency}")
+        else:
+            m2.metric("Reference estimate", "Frankfurter only")
+            m3.metric("Recipient before fees", f"{reference_target:,.2f} {plan.destination.currency}")
+            m4.metric("Provider fee", "Unknown")
+
+        status_renderer = st.success if plan_status == "READY FOR USER REVIEW" else st.error if plan_status.startswith("STOP") else st.warning
+        status_renderer(f"**Agent decision: {plan_status}**  \n{status_reason}")
+        st.subheader("Your plan")
+        for number, step in enumerate(plan.steps, start=1):
+            st.markdown(f"<div class='step'><b>{number}. {step}</b></div>", unsafe_allow_html=True)
+        st.subheader("Live provider preview")
+        if quotes:
+            st.dataframe(wise_rows(quotes), hide_index=True, width="stretch")
+            st.info(
+                f"Suggested preview for **{plan_priority}**: {recommendation_reason(selected, plan_priority)} "
+                f"Provider ETA: **{selected.estimated_delivery_text}**. "
+                "This is an unauthenticated estimate, not a locked quote; SendSmart cannot execute it."
+            )
+            a1, a2, a3, a4 = st.columns(4)
+            a1.metric("Provider rate", f"{selected.rate:,.6f}")
+            a2.metric("Rate vs reference", f"{assessment.rate_difference_percent:+.2f}%")
+            a3.metric("Fee share", f"{assessment.fee_percent:.2f}%")
+            a4.metric("Indicative total cost", f"{assessment.effective_cost_percent:.2f}%")
+            if assessment.deadline_ok is True:
+                st.success(f"Provider ETA is on or before your {plan.request.deadline.isoformat()} deadline.")
+            elif assessment.deadline_ok is False:
+                st.error(f"Provider ETA is later than your {plan.request.deadline.isoformat()} deadline. Choose another option or change the date.")
+            else:
+                st.caption("Deadline feasibility is unavailable because the provider did not return a timestamp.")
+            st.caption(
+                "Indicative total cost compares the recipient amount with converting the full source amount at the independent Frankfurter rate. "
+                "It is an explanation metric, not a provider accounting figure."
+            )
+        else:
+            st.warning(
+                "No live Wise preview is available for this request right now. SendSmart calculated the reference-only amount below; "
+                "it excludes provider fees and FX margins. "
+                f"Connection status: {st.session_state.wise_error or 'No enabled option returned.'}"
+            )
+            st.dataframe(
+                [{
+                    "Estimate": "Independent reference before fees",
+                    f"Send ({plan.origin.currency})": f"{reference_source:,.2f}",
+                    f"Recipient ({plan.destination.currency})": f"{reference_target:,.2f}",
+                    "Provider fee": "Unknown",
+                    "Provider ETA": "Unknown",
+                    "Can execute": "No",
+                }],
+                hide_index=True,
+                width="stretch",
+            )
+            st.caption("This calculation uses the displayed Frankfurter rate. A provider can return a different rate and deduct or add fees.")
+
+        st.subheader("Independent cost benchmark")
+        if benchmark:
+            b1, b2, b3 = st.columns(3)
+            b1.metric("World Bank period", load_world_bank_snapshot()["period"])
+            b2.metric("Median cost · small transfer", f"{benchmark['median_cost_200_pct']:.2f}%")
+            b3.metric("Minimum observed", f"{benchmark['minimum_cost_200_pct']:.2f}%")
+            st.caption(
+                f"Based on {benchmark['transparent_observations']} transparent historical observations for "
+                f"{benchmark['source']} → {benchmark['destination']}. It is a benchmark, not a current offer."
+            )
+            with st.expander("See the lowest observed World Bank services"):
+                st.dataframe(benchmark["lowest_observed_services"], hide_index=True, width="stretch")
+        else:
+            st.caption(
+                "World Bank Remittance Prices Worldwide does not cover this exact country pair in its latest bundled quarter. "
+                "No benchmark is invented for uncovered corridors."
+            )
+
+        st.subheader("Preliminary public-list screen")
+        if not screened_name:
+            st.info("Not run. Add a university or recipient name to compare it with the UN Security Council Consolidated List.")
+        elif matches:
+            st.error(
+                f"Possible name match found ({len(matches)}). This is not a final identity decision: stop and send it to trained compliance staff for review with additional identifiers."
+            )
+            st.dataframe(
+                [{"UN reference": item.reference, "Type": item.kind, "Matched name": item.matched_name, "Similarity": f"{item.score:.0%}"} for item in matches],
+                hide_index=True,
+                width="stretch",
+            )
+        else:
+            st.success(
+                f"No preliminary name match for “{screened_name}” in the bundled UN snapshot. This is not KYC, AML clearance, or proof of identity."
+            )
+
+        decision_report = build_decision_report(plan, selected, assessment, benchmark, screened_name, matches)
+        st.download_button(
+            "Download decision report",
+            data=json.dumps(decision_report, indent=2, ensure_ascii=False),
+            file_name=f"sendsmart-{plan.origin.iso3.lower()}-{plan.destination.iso3.lower()}-decision.json",
+            mime="application/json",
+            width="stretch",
+        )
+        st.caption("The report preserves the selected evidence, source dates, decision status and non-execution boundary for review.")
+
+        with st.expander("Show exactly what is real and what remains simulated"):
+            st.markdown(
+                "- **Real public data:** UNESCO destination ranking, Frankfurter reference FX, World Bank corridor benchmarks, and the UN consolidated-list snapshot.\n"
+                "- **Real provider preview:** Wise returns current fee, conversion and ETA estimates when the corridor is supported. It is not logged in, funded, locked or executable.\n"
+                "- **Not implemented:** beneficiary ownership checks, invoice/reference validation, KYC, source-of-funds, provider onboarding, legal eligibility and payment execution.\n"
+                "- **Still simulated:** only the separate Safe execution demo, retained to demonstrate approval and security controls."
+            )
+
+with execution_tab:
+    st.subheader("Guardrailed payment simulation")
+    st.caption("This separate flow demonstrates approvals. It retains two fixed fictional personas and never sends money.")
+    persona = st.selectbox("Demo persona", ["Aisha (MY → UK)", "Carlos (MX → US)"])
     user_id = "aisha" if persona.startswith("Aisha") else "carlos"
     examples = {
         "Tuition": "Pay GBP 9000 tuition to Northbridge University from MYR by 27 October 2026",
@@ -67,39 +347,31 @@ with chat_tab:
         "Compare only": "Compare GBP 500 options from MYR to GBP for my landlord",
         "Needs clarification": "Send some money to my landlord",
     }
-    cols = st.columns(len(examples))
-    for column, (label, prompt) in zip(cols, examples.items()):
-        if column.button(label, use_container_width=True):
-            st.session_state.prompt = prompt
-    prompt = st.text_area("What would you like to do?", value=st.session_state.get("prompt", examples["Tuition"]), height=100)
+    quick_cols = st.columns(len(examples))
+    for column, (label, prompt_text) in zip(quick_cols, examples.items()):
+        if column.button(label, width="stretch"):
+            st.session_state.prompt = prompt_text
+    prompt = st.text_area("Describe the payment", value=st.session_state.get("prompt", examples["Tuition"]), height=95)
     uploaded = st.file_uploader("Optional invoice text", type=["txt"])
     document_text = uploaded.getvalue().decode("utf-8", errors="replace") if uploaded else None
-    if st.button("Understand and create plan", type="primary"):
+    if st.button("Understand and create guarded plan", type="primary"):
         st.session_state.prepared = agent.prepare(prompt, user_id=user_id, document_text=document_text)
         st.session_state.last_result = None
-
     prepared = st.session_state.prepared
     if isinstance(prepared, dict):
-        intent = prepared.get("intent")
-        if intent:
-            st.info(f"Intent: {intent.type.value} · confidence {intent.confidence}")
         if prepared.get("clarification"):
             st.warning(prepared["clarification"])
-        if prepared.get("message"):
+        elif prepared.get("message"):
             st.info(prepared["message"])
     elif isinstance(prepared, PreparedTransfer):
         st.write(f"Intent: **{prepared.intent.type.value}** · confidence **{prepared.intent.confidence}**")
-        render_plan(prepared)
-        tier_colors = {Tier.T1_ADVISE: "blue", Tier.T2_CONFIRM: "green", Tier.T3_APPROVE: "orange", Tier.BLOCKED: "red"}
+        render_execution_plan(prepared)
         getattr(st, "error" if prepared.policy.tier == Tier.BLOCKED else "info")(
             f"{prepared.policy.tier.value}: {prepared.policy.required_user_action}"
         )
         st.write(prepared.explanation)
-        if prepared.policy.triggered_rules:
-            st.caption("Rules: " + ", ".join(prepared.policy.triggered_rules))
-        if prepared.policy.tier == Tier.T2_CONFIRM:
-            if st.button("Confirm simulated payment"):
-                st.session_state.last_result = agent.execute(prepared, "CONFIRM")
+        if prepared.policy.tier == Tier.T2_CONFIRM and st.button("Confirm simulated payment"):
+            st.session_state.last_result = agent.execute(prepared, "CONFIRM")
         elif prepared.policy.tier == Tier.T3_APPROVE:
             expected = expected_approval_phrase(prepared.request, prepared.beneficiary["name"])
             phrase = st.text_input("Typed approval", placeholder=expected)
@@ -108,98 +380,132 @@ with chat_tab:
                     st.session_state.last_result = agent.execute(prepared, phrase)
                 except PermissionError as exc:
                     st.error(str(exc))
-        reject_col, stop_col, reset_col = st.columns(3)
-        if reject_col.button("Reject plan"):
-            agent.reject(prepared); st.warning("Plan rejected. Nothing executed.")
-        if stop_col.button("STOP AGENT", type="primary"):
-            agent.executor.set_kill_switch(True); st.error("Kill switch active.")
-        if reset_col.button("Reset STOP AGENT"):
-            agent.executor.set_kill_switch(False); st.success("Kill switch reset.")
-
+        c1, c2, c3 = st.columns(3)
+        if c1.button("Reject plan"):
+            agent.reject(prepared)
+            st.warning("Plan rejected. Nothing executed.")
+        if c2.button("STOP AGENT", type="primary"):
+            agent.executor.set_kill_switch(True)
+            st.error("Kill switch active.")
+        if c3.button("Reset STOP AGENT"):
+            agent.executor.set_kill_switch(False)
+            st.success("Kill switch reset.")
     if st.session_state.last_result:
         receipt = st.session_state.last_result["receipt"]
-        st.success(f"Sandbox receipt received: {receipt['receipt_id']} ({receipt['status']})")
+        st.success(f"Sandbox receipt: {receipt['receipt_id']} ({receipt['status']})")
         st.json(receipt)
-        if receipt["status"] == "PENDING" and st.button("Cancel during hold window"):
-            try:
-                cancelled = agent.executor.cancel(receipt["request_id"])
-                st.session_state.last_result["receipt"] = cancelled
-                st.success("Simulated payment cancelled.")
-            except Exception as exc:
-                st.error(str(exc))
 
-with compare_tab:
-    prepared = st.session_state.prepared
-    if isinstance(prepared, PreparedTransfer):
-        rows = []
-        for quote in prepared.quotes:
-            rows.append({
-                "Recommended": "✓" if quote.provider_id == prepared.selected.quote.provider_id else "",
-                "Provider (MOCK)": quote.provider_name,
-                f"Send ({quote.send_currency})": quote.send_amount,
-                f"Recipient ({quote.receive_currency})": quote.recipient_amount,
-                "Fee + FX markup": quote.total_cost,
-                "ETA business days": quote.eta_business_days,
-                "Deadline OK": quote.deadline_ok,
-            })
-        st.dataframe(rows, hide_index=True, use_container_width=True)
-        st.subheader("Why this route")
-        st.write(prepared.explanation)
-    else:
-        st.info("Create a plan in Chat & Plan to compare routes.")
-
-with attack_tab:
-    st.write("Run prebuilt attacks against the same deterministic policy boundary.")
-    attack_files = {
-        "Injection invoice": "injection_invoice.txt",
-        "Changed bank details": "tampered_invoice.txt",
-    }
-    for label, filename in attack_files.items():
-        if st.button(label):
-            text = (ROOT / "data" / "sample_invoices" / filename).read_text(encoding="utf-8")
-            result = agent.prepare("Pay the tuition invoice from MYR", document_text=text)
-            st.session_state.attack_result = result
-    if st.button("Unverified beneficiary"):
+with safety_tab:
+    st.subheader("Try the safety controls")
+    st.write("These attacks are intentionally blocked by the deterministic policy boundary.")
+    attack_files = {"Injection invoice": "injection_invoice.txt", "Changed bank details": "tampered_invoice.txt"}
+    cols = st.columns(3)
+    for column, (label, filename) in zip(cols[:2], attack_files.items()):
+        if column.button(label, width="stretch"):
+            invoice_text = (ROOT / "data" / "sample_invoices" / filename).read_text(encoding="utf-8")
+            st.session_state.attack_result = agent.prepare("Pay the tuition invoice from MYR", document_text=invoice_text)
+    if cols[2].button("Unverified beneficiary", width="stretch"):
         st.session_state.attack_result = agent.prepare("Send GBP 300 from MYR to GBP to new beneficiary")
-    result = st.session_state.get("attack_result")
-    if isinstance(result, PreparedTransfer):
-        st.error(f"{result.policy.tier.value}: {', '.join(result.policy.triggered_rules)}")
-        st.json(result.policy.model_dump(mode="json"))
+    attack_result = st.session_state.get("attack_result")
+    if isinstance(attack_result, PreparedTransfer):
+        st.error(f"{attack_result.policy.tier.value}: {', '.join(attack_result.policy.triggered_rules)}")
+        st.json(attack_result.policy.model_dump(mode="json"))
 
-with audit_tab:
-    path = agent.audit.path
+with evidence_tab:
+    st.subheader("Competition evidence — generated, not hand-scored")
+    st.caption("The official rubric weights task completion 40%, security and compliance 30%, and innovation and interaction 30%.")
+    metrics = json.loads((ROOT / "evidence" / "metrics.json").read_text(encoding="utf-8"))
+    intent_evidence = json.loads((ROOT / "evidence" / "intent_eval.json").read_text(encoding="utf-8"))
+    e1, e2, e3, e4 = st.columns(4)
+    e1.metric("Sandbox scenarios", f"{metrics['scenario_pass_count']}/{metrics['scenario_count']}")
+    e2.metric("Attack block rate", f"{metrics['attack_block_rate']:.0%}")
+    e3.metric("False-block rate", f"{metrics['false_block_rate']:.0%}")
+    e4.metric("Intent benchmark", f"{intent_evidence['intent_accuracy']:.0%}")
+    st.warning("These are controlled prototype results on bundled scenarios. They do not establish production accuracy or regulatory compliance.")
+
+    r1, r2, r3 = st.columns(3)
+    with r1:
+        st.markdown("**Task completion · 40%**")
+        st.write("Real-data corridor plan, provider preview, deadline check, downloadable decision report, and guarded sandbox receipt.")
+    with r2:
+        st.markdown("**Security and compliance · 30%**")
+        st.write("Permission tiers, typed approval, beneficiary fingerprint, hard caps, injection blocking, one-time tokens, kill switch, and hash-chained audit.")
+    with r3:
+        st.markdown("**Innovation and interaction · 30%**")
+        st.write("Independent rate triangulation, provider-cost explanation, visible agent plan, attack lab, and graceful offline behavior.")
+
+    st.subheader("Audit evidence")
+    audit_path = agent.audit.path
     st.metric("Hash chain", "VERIFIED" if agent.audit.verify_chain() else "TAMPERED")
-    content = path.read_text(encoding="utf-8") if path.exists() else ""
-    rows = [json.loads(line) for line in content.splitlines() if line.strip()]
-    st.dataframe(rows, use_container_width=True)
-    st.download_button("Download my audit data", data=json.dumps(rows, indent=2), file_name="sendsmart-audit.json", mime="application/json")
+    content = audit_path.read_text(encoding="utf-8") if audit_path.exists() else ""
+    audit_rows = [json.loads(line) for line in content.splitlines() if line.strip()]
+    if audit_rows:
+        st.dataframe(audit_rows, width="stretch")
+        st.download_button(
+            "Download audit data",
+            data=json.dumps(audit_rows, indent=2),
+            file_name="sendsmart-audit.json",
+            mime="application/json",
+        )
 
-with value_tab:
-    prepared = st.session_state.prepared
-    if isinstance(prepared, PreparedTransfer):
-        value = prepared.value_report
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Savings vs bank (MOCK USD)", value.savings_vs_bank_usd)
-        col2.metric("Deadline risks avoided", value.deadline_risk_avoided)
-        col3.metric("Manual comparison estimate", f"{value.estimated_manual_minutes} min")
-        st.json(value.model_dump(mode="json"))
-    metrics_path = ROOT / "evidence" / "metrics.json"
-    if metrics_path.exists():
-        st.subheader("Scenario aggregate")
-        st.json(json.loads(metrics_path.read_text(encoding="utf-8")))
+with data_tab:
+    st.subheader("Public data and live integration coverage")
+    world_bank_data = load_world_bank_snapshot()
+    un_data = load_un_snapshot()
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Destinations", len(destinations))
+    c2.metric("Currencies", len({item.currency for item in destinations}))
+    c3.metric("World Bank corridors", len(world_bank_data["corridors"]))
+    c4.metric("UN list entries", len(un_data["entries"]))
+    st.markdown(
+        f"**Ranking:** {destination_data['indicator']}  \n**Release:** {destination_data['release']}  \n"
+        f"**Method:** {destination_data['method']}  \n"
+        f"[UNESCO source]({destination_data['source_url']}) · [Frankfurter](https://frankfurter.dev/) · "
+        f"[World Bank RPW]({world_bank_data['source_url']}) · [UN consolidated list]({un_data['source_url']}) · "
+        "[Wise API documentation](https://docs.wise.com/api-reference)"
+    )
+    st.warning(
+        "Countries report on different schedules, so observations span multiple years. "
+        "The ranking measures all inbound mobile students, not only students from China. World Bank coverage is also a subset of all possible country pairs."
+    )
+    rows = [
+        {"Rank": d.rank, "Destination": d.country, "Currency": d.currency, "Observation year": d.year, "Inbound students": d.students}
+        for d in destinations
+    ]
+    st.dataframe(rows, hide_index=True, width="stretch")
 
-with about_tab:
+with limits_tab:
+    st.subheader("Exactly what is real, simulated, and still missing")
     st.markdown(
         """
-        ### What this demonstrates
-        SendSmart separates language understanding from authorization. It uses deterministic Decimal math,
-        permission tiers, a user checkpoint, a five-minute request-bound HMAC token, replay protection,
-        a kill switch, and a hash-chained audit log.
+        **Real now**
 
-        ### Important limitations
-        All providers, prices, sanctions, beneficiaries, FX rates and payments are fictional or simulated.
-        This prototype is not a bank, payment service, KYC/AML system, or financial adviser. Its regex-based
-        injection detector is illustrative and bypassable. Never use it to move real funds.
+        - Select both countries from the UNESCO top 50.
+        - Verify a live Frankfurter reference rate, with a cached public snapshot if offline.
+        - Request a real unauthenticated Wise fee, conversion and ETA preview when supported.
+        - Compare against the latest bundled World Bank remittance-cost benchmark when that corridor is covered.
+        - Run preliminary name matching against a dated UN Security Council Consolidated List snapshot.
+
+        **Still simulated**
+
+        - The separate Safe execution demo uses two fictional personas, six fictional providers, synthetic beneficiaries and simulated receipts.
+        - Its security limits and destination blocklist are test fixtures, not production compliance policy.
+
+        **Best real replacements still requiring contracts or credentials**
+
+        - **Execution and locked quotes:** Wise Platform partner onboarding and OAuth/API credentials.
+        - **Education beneficiary and reference validation:** Flywire Education APIs plus institutional onboarding.
+        - **Identity/KYC and case management:** a regulated vendor such as Sumsub, reviewed by compliance counsel.
+        - **Broader sanctions/PEP/adverse-media screening:** a licensed screening service with human case review; the UN name check alone is insufficient.
+        - **Production ledger and audit:** bank-grade double-entry ledger, durable authorization store, HSM-backed signing, monitoring and external audit retention.
+
+        **Restrictions you must remember while testing**
+
+        - The main planner is advisory only and never sends money.
+        - Wise previews are estimates: unauthenticated, not rate-locked and not guaranteed available to the user.
+        - Frankfurter is an independent reference rate, not a remittance offer.
+        - World Bank figures are historical corridor benchmarks and many of the 50×49 possible pairs are not covered.
+        - A name-screen result is preliminary; it is neither identity verification nor legal clearance.
+        - The destination ranking is global inbound mobility, not a China-only outbound ranking.
         """
     )
-

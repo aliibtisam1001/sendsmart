@@ -2,17 +2,28 @@
 
 > A security-first cross-border and student finance assistant for the 2026 Shenzhen International FinTechathon, Topic C.
 
-**Status:** working prototype · **Mode:** sandbox only · **Data:** fictional MOCK providers and rates · **Payments:** simulated
+**Status:** working prototype · **Coverage:** 50 study destinations · **Main planner:** real-data advisory · **Execution:** sandbox only
 
-SendSmart helps an international student compare routes for tuition or living-cost transfers, understand the trade-offs, approve an explicit plan, and execute a simulated payment through deterministic safeguards. The language model may understand and explain; it can never authorize execution.
+SendSmart helps an international student choose an origin and one of the 50 leading study destinations, verify a public reference exchange rate, inspect a real Wise quote preview, compare it with public World Bank corridor evidence, and understand a visible plan. A separate two-persona sandbox demonstrates deterministic approval and execution safeguards. The language model may understand and explain; it can never authorize execution.
+
+## Data and coverage
+
+- **Destination coverage:** the top 50 national destinations ranked by each country's latest available value for UNESCO UIS indicator `26637`, “Total inbound internationally mobile students, both sexes (number),” from the February 2026 release. Observation years differ by country.
+- **Exchange rates:** live public reference rates from [Frankfurter](https://frankfurter.dev/), with a dated cached Frankfurter snapshot for offline use.
+- **Provider preview:** live unauthenticated [Wise](https://docs.wise.com/guides/product/send-money/quotes) fee, conversion and ETA estimates when the requested currency pair is supported. These are not locked or executable quotes.
+- **Cost benchmark:** the latest bundled quarter of [World Bank Remittance Prices Worldwide](https://datacatalog.worldbank.org/search/dataset/0037898/remittance-prices-worldwide), covering 348 observed corridors. Uncovered pairs are labelled instead of estimated.
+- **Preliminary screening:** a dated [UN Security Council Consolidated List](https://main.un.org/securitycouncil/en/content/un-sc-consolidated-list) snapshot. Name matching alone is not KYC, AML clearance, or a legal decision.
+- **Payments:** no real funds, account access, university verification or payment rail.
+
+The 50-country builder supports advisory comparisons between any two countries in the catalog. Safe execution remains a deliberately narrow sandbox using the Aisha MY→UK and Carlos MX→US personas.
 
 ## Five visible capabilities
 
-1. **Intent understanding** — classifies seven intents, extracts amount/currencies/beneficiary/deadline, resolves relative dates, and asks one concise question rather than guessing.
-2. **Task planning** — displays an ordered plan before action and preserves mandatory validation, beneficiary, policy, and user-checkpoint steps.
-3. **Safe execution** — Decimal-only math, permission tiers, document-injection detection, signed one-time execution tokens, replay protection, and a hash-chained audit log.
-4. **User control** — approve, reject, edit preference, cancel during a hold window, or engage the global STOP AGENT switch.
-5. **Measurable value** — computes savings against a mock bank wire and default-choice baseline, deadline risk avoided, time estimate, block rate, false-block rate, and intent accuracy.
+1. **Interactive corridor builder** — select origin, destination, amount interpretation, purpose, deadline, recipient name and optimisation preference.
+2. **Public-rate verification** — labels every rate as live or cached and shows source and reference date.
+3. **Real-data decision evidence** — shows current Wise preview options, World Bank context, preliminary UN name screening, deadline feasibility, rate/fee analysis, and a downloadable provenance report.
+4. **Safe execution demo** — Decimal-only math, permission tiers, document-injection detection, signed one-time tokens, replay protection and a hash-chained audit log.
+5. **Competition evidence view** — maps generated scenario, attack, intent and audit evidence to the official 40/30/30 judging criteria while keeping prototype limitations visible.
 
 ## Demo screenshots
 
@@ -57,7 +68,7 @@ python -m streamlit run src/sendsmart/ui/app.py
 
 GNU Make users can run `make install`, `make test`, `make scenarios`, `make eval`, and `make run`.
 
-No API key is required. If `ANTHROPIC_API_KEY` is absent, the tested deterministic fallback remains fully usable. Live FX is off by default and the prototype never depends on network availability.
+No API key is required. The corridor builder attempts live Frankfurter and Wise requests; Frankfurter has a bundled public fallback, while unavailable Wise previews are labelled rather than fabricated. World Bank and UN snapshots are bundled for reproducibility. If `ANTHROPIC_API_KEY` is absent, the tested deterministic fallback remains fully usable.
 
 ## Permission tiers
 
@@ -73,7 +84,9 @@ Blocking controls include unverified beneficiary, changed bank fingerprint, hard
 ## Repository map
 
 ```text
-data/                 fictional providers, rates, users, beneficiaries, evaluation set
+data/                 UNESCO, Frankfurter, World Bank and UN snapshots; sandbox fixtures
+scripts/              reproducible World Bank and UN snapshot builders
+src/sendsmart/integrations/ Wise preview and UN screening adapters
 src/sendsmart/agent/  intent, parsing, planning, orchestration, explanation
 src/sendsmart/core/   FX, Decimal pricing, business-day ETA, ranking
 src/sendsmart/security/ policy, guardrails, injection, tokens, audit
@@ -99,13 +112,20 @@ python evaluation/eval_intent.py
 
 The runners exit non-zero when a required target fails. See [Execution Evidence](docs/EXECUTION_EVIDENCE.md) and [Value Methodology](docs/VALUE_METHODOLOGY.md).
 
-## Mock-data disclosure
+## Data disclosure
 
-Every provider name, beneficiary, rate, price, sanctions entry, and transaction is fictional or simulated. The fallback GBP rate is intentionally synthetic so the required GBP 9,000 competition scenario remains inside the USD 10,000 demonstration cap; it must not be interpreted as a market rate. Frankfurter support is optional and disabled by default.
+The main planner uses public UNESCO, Frankfurter, World Bank and UN data plus Wise's unauthenticated quote-preview endpoint. The Wise response is real but remains an estimate: it is not authenticated, rate-locked, funded, or executable. The separate guarded-execution demo retains fictional providers, beneficiaries, policies and receipts so its fixed competition security scenarios remain reproducible.
 
 ## Limitations
 
-- No real payment rail, KYC, AML, sanctions feed, identity verification, or custody.
+- No real payment rail, KYC, source-of-funds checks, institutional account verification, or custody.
+- UN snapshot matching is preliminary only; production screening needs continuously updated sanctions/PEP/adverse-media data and human case review.
+- The 50-country ranking is global inbound mobility, not a China-only outbound ranking; latest observation years vary.
+- The selected country's primary currency is used; multi-currency countries and alternate tuition billing currencies are not yet modelled.
+- Frankfurter rates are reference data, not guaranteed remittance quotes.
+- Wise unauthenticated previews are estimates and may not represent eligibility or final availability for a specific user.
+- World Bank figures are historical benchmarks and do not cover every pair among the 50 destinations.
+- Real execution requires provider partnership and credentials; education-specific validation is best added through a provider such as Flywire, with regulated KYC tooling such as Sumsub.
 - Regex intent and prompt-injection detection are demonstrative and bypassable.
 - HMAC secret storage is environment-based and not production key management.
 - Single-process, single-user demo state; no durable transaction database.

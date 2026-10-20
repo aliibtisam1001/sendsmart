@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-20T00:00:00+00:00",
+  "base": "EUR",
+  "source": "Frankfurter public API (cached snapshot)",
+  "source_url": "https://api.frankfurter.dev/v2/rates",
+  "is_mock": false,
+  "rate_dates": {"XOF": "2026-10-19"},
+  "rates": {
+    "EUR": "1", "USD": "1.1235", "GBP": "0.84272", "AUD": "1.6125", "CAD": "1.585",
+    "RUB": "93.55", "TRY": "55.66", "AED": "4.1262", "CNY": "7.5025", "JPY": "177.74",
+    "KRW": "1495.71", "IRR": "1979718", "MYR": "4.5855", "ARS": "1704.54", "EGP": "60.276",
+    "SAR": "4.2132", "PLN": "4.3704", "XOF": "655.82", "HKD": "8.8249", "MXN": "20.735",
+    "SGD": "1.4371", "CHF": "0.92685", "CZK": "24.335", "KGS": "98.28", "INR": "106.56",
+    "NZD": "1.9832", "HUF": "363.16", "JOD": "0.79658", "THB": "37.664", "MOP": "9.0897",
+    "ZAR": "18.4493", "GEL": "2.9137", "RON": "5.329", "SEK": "11.1294", "UAH": "50.514",
+    "LBP": "101088", "KZT": "508.34", "DKK": "7.4776", "BRL": "5.6913", "MAD": "10.9727"
+  },
+  "disclosure": "Public reference-rate snapshot cached for offline demonstration; not a live provider quote."
+}
